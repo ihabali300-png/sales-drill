@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b130d">
+<title>تمارين البيع</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#0b130d;--card:#132017;--card2:#1a2b1f;--line:#24382a;--lime:#a3e635;--txt:#e8f5e0;--mut:#8fa894;--red:#f87171;--grn:#4ade80;--amb:#fbbf24}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI",Tahoma,sans-serif;font-size:16px;line-height:1.65;padding-bottom:40px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+header h1{font-size:19px;margin:0;flex:1}
+.ib{position:relative;background:var(--card);border:1px solid var(--line);color:var(--txt);width:40px;height:40px;border-radius:12px;font-size:19px}
+.badge{position:absolute;top:-5px;left:-5px;background:#ef4444;color:#fff;font-size:11px;min-width:17px;height:17px;border-radius:4px;display:none;align-items:center;justify-content:center;font-weight:700}
+main{padding:12px;max-width:720px;margin:auto}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center}
+.st b{display:block;font-size:22px;color:var(--lime)}
+.st span{font-size:12px;color:var(--mut)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 10px;text-align:center;color:var(--txt);font-size:15px;font-weight:600}
+.tile .e{font-size:30px;display:block}
+.tile small{display:block;color:var(--mut);font-weight:400;font-size:12px;margin-top:2px}
+.tile.on{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime) inset}
+.tile .ok{color:var(--grn)}
+.cur{display:none;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;animation:dn .25s ease}
+.cur.open{display:block}
+@keyframes dn{from{opacity:0;transform:translateY(-6px)}to{opacity:1}}
+h2{font-size:17px;margin:0 0 10px;color:var(--lime)}
+.chip{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:2px 12px;font-size:13px;margin-bottom:8px}
+.sit{background:var(--card2);border-radius:12px;padding:10px 12px;margin-bottom:10px;white-space:pre-line}
+.bub{background:#1f3a24;border:1px solid #2f5a36;border-radius:16px 16px 16px 4px;padding:10px 14px;margin:8px 0 12px;font-weight:600}
+.bub:before{content:"🗣️ العميل: ";color:var(--lime);font-weight:700}
+textarea{width:100%;min-height:110px;background:#0e1a11;color:var(--txt);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;resize:vertical}
+textarea:focus{outline:none;border-color:var(--lime)}
+.btn{display:block;width:100%;margin-top:10px;background:var(--lime);color:#13200f;border:0;border-radius:12px;padding:12px;font:inherit;font-weight:700;font-size:16px}
+.btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+.btn.dng{background:#3b1111;color:#fecaca;border:1px solid #7f1d1d}
+.box{border-radius:12px;padding:10px 12px;margin-top:10px;border:1px solid var(--line);background:var(--card2)}
+.box h3{margin:0 0 4px;font-size:15px}
+.box.best{border-color:#2f5a36}.box.best h3{color:var(--grn)}
+.box.fix{border-color:#6b5a1a}.box.fix h3{color:var(--amb)}
+.box.rule{border-color:var(--lime);background:#1c2c12}.box.rule h3{color:var(--lime)}
+.chk{list-style:none;padding:0;margin:6px 0 0;font-size:14px}
+.chk li{padding:2px 0}
+.hide{display:none!important}
+.q{background:var(--card2);border-radius:14px;padding:12px;margin-bottom:12px}
+.q .qh{font-size:12px;color:var(--mut);margin-bottom:4px}
+.q .qt{font-weight:700;margin-bottom:8px}
+.opt{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:right;background:#0e1a11;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:9px 10px;margin:6px 0;font:inherit;font-size:15px}
+.opt .l{flex:none;width:24px;height:24px;border-radius:7px;background:var(--card);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--lime)}
+.opt.right{border-color:var(--grn);background:#12301b}.opt.wrong{border-color:var(--red);background:#3a1515}
+.exp{margin-top:6px;font-size:14px;background:#0e1a11;border-radius:10px;padding:8px 10px}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+input[type=time]{background:#0e1a11;color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:18px;color-scheme:dark}
+.mut{color:var(--mut);font-size:13px}
+.score{font-size:22px;text-align:center;font-weight:800;color:var(--lime);margin:6px 0}
+.hist div{padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.toast{position:fixed;bottom:18px;right:50%;transform:translateX(50%);background:var(--lime);color:#13200f;padding:10px 18px;border-radius:12px;font-weight:700;z-index:20;display:none;max-width:90%}
+.upd{background:#1c2c12;border:1px solid var(--lime);border-radius:14px;padding:12px;margin-bottom:12px}
+.upd ul{margin:6px 0;padding-inline-start:18px}
+.two{display:flex;gap:8px}.two .btn{margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎯 تمارين البيع</h1>
+  <button class="ib" id="updBtn" title="تحديث">⟳<span class="badge" id="badge">1</span></button>
+</header>
+<main>
+  <div id="updCard" class="upd hide"></div>
+
+  <div class="stats">
+    <div class="st"><b id="stStreak">0</b><span>🔥 أيام متتالية</span></div>
+    <div class="st"><b id="stAcc">—</b><span>✅ نسبة صح الكويز</span></div>
+    <div class="st"><b id="stWrong">0</b><span>🔁 مستني مراجعة</span></div>
+  </div>
+
+  <div class="tiles">
+    <button class="tile" data-sec="drill"><span class="e">🎯</span>تمرين النهارده<small id="tDrill">موقف بيع</small></button>
+    <button class="tile" data-sec="quiz"><span class="e">🧠</span>كويز النهارده<small id="tQuiz">3 أسئلة</small></button>
+    <button class="tile" data-sec="review"><span class="e">📊</span>المراجعة والسجل<small>الغلط + آخر أيام</small></button>
+    <button class="tile" data-sec="settings"><span class="e">⚙️</span>الإعدادات<small id="tSet">مواعيد الإشعارات</small></button>
+  </div>
+
+  <!-- تمرين البيع -->
+  <section class="cur" id="sec-drill">
+    <h2>🎯 تمرين البيع</h2>
+    <span class="chip" id="dCat"></span>
+    <div class="sit" id="dSit"></div>
+    <div class="bub" id="dCust"></div>
+    <div id="dStep1">
+      <textarea id="dAns" placeholder="اكتب ردك على العميل هنا كأنك قدامه..."></textarea>
+      <button class="btn" id="dGo">✍️ شوف التقييم</button>
+    </div>
+    <div id="dRes" class="hide">
+      <div class="box"><h3>📝 ردك</h3><div id="dMine"></div><ul class="chk" id="dChk"></ul></div>
+      <div class="box best"><h3>✅ الرد الأحسن</h3><div id="dBest"></div></div>
+      <div class="box fix"><h3>🔧 حاجة واحدة تتظبط</h3><div id="dFix"></div></div>
+      <div class="box rule"><h3>🧠 القاعدة</h3><div id="dRule"></div></div>
+      <h2 style="margin-top:16px">↩️ العميل رد عليك</h2>
+      <div class="bub" id="dF"></div>
+      <div id="dStep2">
+        <textarea id="dFAns" placeholder="رد عليه بجملة أو اتنين..."></textarea>
+        <button class="btn" id="dFGo">👀 شوف الرد النموذجي</button>
+      </div>
+      <div id="dFRes" class="hide">
+        <div class="box"><h3>📝 ردك</h3><div id="dFMine"></div></div>
+        <div class="box best"><h3>✅ الرد النموذجي</h3><div id="dFR"></div></div>
+        <div class="score">🔥 تمرين النهارده خلص</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- الكويز -->
+  <section class="cur" id="sec-quiz">
+    <h2>🧠 كويز النهارده</h2>
+    <div id="qList"></div>
+    <div id="qScore" class="score hide"></div>
+  </section>
+
+  <!-- المراجعة -->
+  <section class="cur" id="sec-review">
+    <h2>🔁 أسئلة هترجعلك بصيغة تانية</h2>
+    <div id="rWrong" class="hist"></div>
+    <h2 style="margin-top:14px">📅 آخر 14 يوم</h2>
+    <div id="rHist" class="hist"></div>
+    <h2 style="margin-top:14px">📚 البنك</h2>
+    <div id="rBank" class="mut"></div>
+  </section>
+
+  <!-- الإعدادات -->
+  <section class="cur" id="sec-settings">
+    <h2>⏰ مواعيد الإشعارات</h2>
+    <div class="row"><span>🎯 تمرين البيع</span><input type="time" id="sD"></div>
+    <div class="row"><span>🧠 الكويز</span><input type="time" id="sQ"></div>
+    <button class="btn" id="sSave">💾 احفظ المواعيد</button>
+    <div id="natBox">
+      <div class="row"><span>🔔 إذن الإشعارات</span><b id="sPerm">—</b></div>
+      <div class="two">
+        <button class="btn sec" id="sAsk">اطلب الإذن</button>
+        <button class="btn sec" id="sTest">🔔 جرّب إشعار</button>
+      </div>
+      <button class="btn sec" id="sBat">🔋 البطارية: خلّيه «غير مقيّد»</button>
+      <p class="mut">على سامسونج: الإعدادات ← التطبيقات ← تمارين البيع ← البطارية ← غير مقيّد، عشان الإشعار ييجي في ميعاده.</p>
+    </div>
+    <p class="mut hide" id="noNat">⚠️ الإشعارات بتشتغل من تطبيق الـ APK بس، مش من المتصفح.</p>
+    <h2 style="margin-top:14px">🧹 البيانات</h2>
+    <p class="mut">كل حاجة محفوظة على الموبايل نفسه.</p>
+    <button class="btn dng" id="sReset">🗑️ صفّر كل حاجة</button>
+    <p class="mut" style="text-align:center;margin-top:12px" id="sVer"></p>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="scenarios.js"></script>
+<script src="quiz.js"></script>
+<script>
+const APP_V = 1;
+const LS = 'sd_state_v1';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/\n/g,'<br>');
+const NAT = window.Android || null;
+
+// ───── البيانات ─────
+const SC = {}; SCEN.forEach(s => SC[s.id] = s);
+const QB = QUIZ.map(a => ({id:a[0], t:a[1], c:a[2], q:a[3], o:a[4], a:a[5], e:a[6]}));
+const QI = {}; QB.forEach(q => QI[q.id] = q);
+const TYPE = {b:'🇩🇪 Brillmann', p:'👓 بروقرسف', w:'📐 قياسات وضع النظارة'};
+const LET = ['أ','ب','ج','د'];
+const T = {
+  emp:  ['تبدأ بالتفهّم','اتفهم|فاهمك|فاهم|معك حق|معاك حق|حقك|طبيعي|اكيد|ولا يهمك|يسعدني|اقدر|سؤال منطقي|سؤال مهم|سؤال ممتاز','ابدأ بجملة تفهّم قبل أي شرح: «أتفهمك» / «حقك»'],
+  ask:  ['تسأل عن الاستخدام','تستخدم|استخدام|شغلك|عملك|طبيعه|كم ساعه|تسوق|شاشه|جوال|؟|?','اختم بسؤال عن استخدامه — السؤال بيرجّع الكلام لاحتياجه'],
+  calm: ['تطمّن العميل','طبيعي|ولا يهمك|اطمن|نضبط|نضبطها|نشوف|نتاكد|حلها|نحلها|بسيط|معليش|اسف|فهمت','طمّنه الأول قبل الفحص: «ولا يهمك، هنشوفها دلوقتي»'],
+  close:['تقفل بخطوة جاية','نجرب|نبدا|نقيس|نعتمد|اجهز|نكمل|خلينا|خلني|اوريك|نشوف|تحبين|تحب','اختم بخطوة جاية واضحة: «خليني أوريك» / «نجرب»']
+};
+const norm = s => (s||'').toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
+
+function defState(){ return {dUsed:[], qUsed:[], cSeen:[], days:{}, wrong:[], qt:0, qr:0, set:{d:'17:30', q:'21:00'}} }
+let S;
+try { S = Object.assign(defState(), JSON.parse(localStorage.getItem(LS) || '{}')); } catch(e){ S = defState(); }
+function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e){} }
+
+// ───── التاريخ والعشوائي الثابت ─────
+const fmt = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today = () => fmt(new Date());
+function addDays(ds, n){ const [y,m,d] = ds.split('-').map(Number); return fmt(new Date(y, m-1, d+n)); }
+function dayNum(ds){ const [y,m,d] = ds.split('-').map(Number); return Math.round((Date.UTC(y,m-1,d) - Date.UTC(2026,0,1)) / 864e5); }
+function seeded(str){ let h = 2166136261; for (const ch of str) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+
+// ───── اختيار موقف اليوم ─────
+function catOn(ds){ const x = S.days[ds]; return x && x.d && SC[x.d.id] ? SC[x.d.id].cat : null; }
+function pickDrill(ds){
+  const day = S.days[ds] || (S.days[ds] = {});
+  if (day.d && SC[day.d.id]) return day.d;
+  const recent = n => { const a = []; for (let i = 1; i <= n; i++) a.push(catOn(addDays(ds, -i))); return a; };
+  let pool;
+  if (!recent(2).includes('prog')) pool = 'prog';          // بروقرسف مرة على الأقل كل 3 أيام
+  else if (!recent(5).includes('pow')) pool = 'pow';       // شكوى قياسات مرة كل أسبوع
+  let s;
+  if (pool) {
+    const all = SCEN.filter(x => x.cat === pool);
+    let av = all.filter(x => !S.dUsed.includes(x.id));
+    if (!av.length) { S.dUsed = S.dUsed.filter(id => SC[id] && SC[id].cat !== pool); av = all; }
+    s = av[Math.floor(seeded(ds + pool) * av.length)];
+  } else {
+    let av = SCEN.filter(x => x.cat !== 'prog' && x.cat !== 'pow' && !S.dUsed.includes(x.id));
+    if (!av.length) { S.dUsed = S.dUsed.filter(id => SC[id] && (SC[id].cat === 'prog' || SC[id].cat === 'pow')); av = SCEN.filter(x => x.cat !== 'prog' && x.cat !== 'pow'); }
+    const last = {};
+    for (const [k, v] of Object.entries(S.days)) if (v.d && SC[v.d.id]) { const c = SC[v.d.id].cat; last[c] = Math.max(last[c] ?? -1e9, dayNum(k)); }
+    const cats = [...new Set(av.map(x => x.cat))].sort((a, b) => (last[a] ?? -1e9) - (last[b] ?? -1e9) || seeded(ds + a) - seeded(ds + b));
+    const inCat = av.filter(x => x.cat === cats[0]);
+    s = inCat[Math.floor(seeded(ds + 'x') * inCat.length)];
+  }
+  S.dUsed.push(s.id);
+  day.d = {id: s.id};
+  save();
+  return day.d;
+}
+
+// ───── اختيار كويز اليوم ─────
+function pickQuiz(ds){
+  const day = S.days[ds] || (S.days[ds] = {});
+  if (day.q && day.q.items.every(it => QI[it.id])) return day.q;
+  const slots = dayNum(ds) % 2 === 0 ? ['b','p','w'] : ['b','b','p'];
+  const items = [], usedC = new Set(), taken = new Set();
+  const due = S.wrong.filter(w => w.due <= ds).sort((a, b) => a.due < b.due ? -1 : 1);
+  slots.forEach((t, i) => {
+    let q, r = 0;
+    const w = due.find(w => w.t === t && !usedC.has(w.c) && !taken.has(w.c));
+    if (w) {
+      taken.add(w.c);
+      const sib = QB.filter(x => x.c === w.c && x.t === t && x.id !== w.qid);
+      q = sib.length ? sib[Math.floor(seeded(ds + w.c) * sib.length)] : QI[w.qid];
+      r = 1;
+    } else {
+      const pend = new Set(S.wrong.map(w => w.c));
+      const base = x => x.t === t && !usedC.has(x.c) && !pend.has(x.c);
+      let pool = QB.filter(x => base(x) && !S.qUsed.includes(x.id));
+      if (!pool.length) { S.qUsed = S.qUsed.filter(id => QI[id] && QI[id].t !== t); S.cSeen = S.cSeen.filter(c => !QB.some(x => x.c === c && x.t === t)); pool = QB.filter(base); }
+      const fresh = pool.filter(x => !S.cSeen.includes(x.c));
+      if (fresh.length) pool = fresh;
+      q = pool[Math.floor(seeded(ds + t + i) * pool.length)];
+      S.qUsed.push(q.id);
+      if (!S.cSeen.includes(q.c)) S.cSeen.push(q.c);
+    }
+    usedC.add(q.c);
+    items.push({id: q.id, r, a: null});
+  });
+  day.q = {items};
+  save();
+  return day.q;
+}
+
+// ───── التقييم ─────
+function grade(s, text){
+  const n = norm(text);
+  return s.k.map(k => {
+    const [label, kw, tip] = typeof k === 'string' ? T[k] : k;
+    return {label, tip, hit: kw.split('|').some(w => w && n.includes(norm(w)))};
+  });
+}
+
+// ───── الإحصائيات ─────
+function doneDay(ds){ const d = S.days[ds]; return !!(d && ((d.d && d.d.done) || (d.q && d.q.done))); }
+function streak(){ let ds = today(), n = 0; if (!doneDay(ds)) ds = addDays(ds, -1); while (doneDay(ds)) { n++; ds = addDays(ds, -1); } return n; }
+function renderStats(){
+  $('stStreak').textContent = streak();
+  $('stAcc').textContent = S.qt ? Math.round(S.qr / S.qt * 100) + '%' : '—';
+  $('stWrong').textContent = S.wrong.length;
+  const d = S.days[today()] || {};
+  $('tDrill').innerHTML = d.d && d.d.done ? '<span class="ok">✔ خلص</span>' : 'موقف بيع';
+  $('tQuiz').innerHTML = d.q && d.q.done ? '<span class="ok">✔ ' + d.q.items.filter(it => it.a === QI[it.id].a).length + ' من 3</span>' : '3 أسئلة';
+  $('tSet').textContent = '🎯 ' + S.set.d + ' • 🧠 ' + S.set.q;
+}
+
+// ───── رسم التمرين ─────
+let curDs;
+function renderDrill(){
+  const ds = curDs = today();
+  const dd = pickDrill(ds), s = SC[dd.id];
+  $('dCat').textContent = CATS[s.cat];
+  $('dSit').textContent = s.s;
+  $('dCust').textContent = s.c;
+  $('dF').textContent = s.f;
+  if (dd.ans != null) showDrillRes(s, dd); else { $('dStep1').classList.remove('hide'); $('dRes').classList.add('hide'); $('dAns').value = ''; }
+}
+function showDrillRes(s, dd){
+  $('dStep1').classList.add('hide'); $('dRes').classList.remove('hide');
+  const g = grade(s, dd.ans);
+  $('dMine').innerHTML = esc(dd.ans);
+  $('dChk').innerHTML = g.map(x => '<li>' + (x.hit ? '✅ ' : '⬜ ') + esc(x.label) + '</li>').join('');
+  $('dBest').innerHTML = esc(s.m);
+  const miss = g.find(x => !x.hit);
+  $('dFix').innerHTML = miss ? esc(miss.tip) : '✨ غطّيت النقط الأساسية! لمسة زيادة: ' + esc(s.p);
+  $('dRule').innerHTML = esc(s.r);
+  if (dd.fans != null) {
+    $('dStep2').classList.add('hide'); $('dFRes').classList.remove('hide');
+    $('dFMine').innerHTML = esc(dd.fans); $('dFR').innerHTML = esc(s.fr);
+  } else { $('dStep2').classList.remove('hide'); $('dFRes').classList.add('hide'); $('dFAns').value = ''; }
+}
+$('dGo').onclick = () => {
+  const v = $('dAns').value.trim();
+  if (v.length < 10) return toast('✍️ اكتب ردك كامل الأول');
+  const dd = S.days[curDs].d; dd.ans = v; save();
+  showDrillRes(SC[dd.id], dd);
+};
+$('dFGo').onclick = () => {
+  const v = $('dFAns').value.trim();
+  if (v.length < 3) return toast('✍️ اكتب ردك الأول');
+  const dd = S.days[curDs].d; dd.fans = v; dd.done = true; save();
+  showDrillRes(SC[dd.id], dd); renderStats();
+  $('dFRes').scrollIntoView({behavior:'smooth', block:'center'});
+};
+
+// ───── رسم الكويز ─────
+function order(qid, ds){ const o = [0,1,2,3]; for (let i = 3; i > 0; i--) { const j = Math.floor(seeded(qid + ds + i) * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; } return o; }
+function renderQuiz(){
+  const ds = curDs = today();
+  const qq = pickQuiz(ds);
+  $('qList').innerHTML = qq.items.map((it, n) => {
+    const q = QI[it.id], ord = order(q.id, ds);
+    const done = it.a != null;
+    const opts = ord.map((oi, k) => {
+      let cls = '';
+      if (done) { if (oi === q.a) cls = 'right'; else if (oi === it.a) cls = 'wrong'; }
+      return '<button class="opt ' + cls + '" data-n="' + n + '" data-o="' + oi + '"' + (done ? ' disabled' : '') + '><span class="l">' + LET[k] + '</span><span>' + esc(q.o[oi]) + '</span></button>';
+    }).join('');
+    const exp = done ? '<div class="exp">' + (it.a === q.a ? '✅ صح! ' : '❌ الإجابة الصح: ' + LET[ord.indexOf(q.a)] + ' — ') + esc(q.e) + (it.a !== q.a ? '<br>🔁 هيرجعلك بصيغة تانية بعد 3 أيام' : '') + '</div>' : '';
+    return '<div class="q"><div class="qh">سؤال ' + (n + 1) + ' • ' + TYPE[q.t] + (it.r ? ' • 🔁 مراجعة' : '') + '</div><div class="qt">' + esc(q.q) + '</div>' + opts + exp + '</div>';
+  }).join('');
+  if (qq.done) { const r = qq.items.filter(it => it.a === QI[it.id].a).length; $('qScore').textContent = (r === 3 ? '🏆 ' : r === 2 ? '👏 ' : '💪 ') + r + ' من 3 صح'; $('qScore').classList.remove('hide'); }
+  else $('qScore').classList.add('hide');
+}
+$('qList').addEventListener('click', e => {
+  const b = e.target.closest('.opt'); if (!b || b.disabled) return;
+  const ds = curDs, qq = S.days[ds].q, it = qq.items[+b.dataset.n];
+  if (it.a != null) return;
+  const q = QI[it.id], pick = +b.dataset.o, ok = pick === q.a;
+  it.a = pick; S.qt++; if (ok) S.qr++;
+  const wi = S.wrong.findIndex(w => w.c === q.c && w.t === q.t);
+  if (ok) { if (wi >= 0) S.wrong.splice(wi, 1); }
+  else { const w = {c: q.c, t: q.t, qid: q.id, due: addDays(ds, 3)}; if (wi >= 0) S.wrong[wi] = w; else S.wrong.push(w); }
+  if (qq.items.every(x => x.a != null)) qq.done = true;
+  save(); renderQuiz(); renderStats();
+});
+
+// ───── المراجعة ─────
+function renderReview(){
+  $('rWrong').innerHTML = S.wrong.length ? S.wrong.slice().sort((a, b) => a.due < b.due ? -1 : 1).map(w => {
+    const q = QI[w.qid]; return '<div>' + TYPE[w.t] + ' — ' + esc(q ? q.q : w.c) + '<br><span class="mut">📅 يرجع: ' + w.due + '</span></div>';
+  }).join('') : '<div class="mut">🎉 مفيش غلط مستني — كمل كده</div>';
+  const rows = [];
+  for (let i = 0; i < 14; i++) {
+    const ds = addDays(today(), -i), d = S.days[ds]; if (!d) continue;
+    const dc = d.d && SC[d.d.id] ? CATS[SC[d.d.id].cat] + (d.d.done ? ' ✔' : ' …') : '—';
+    const qs = d.q ? (d.q.done ? '🧠 ' + d.q.items.filter(it => it.a === QI[it.id].a).length + ' من 3' : '🧠 …') : '';
+    rows.push('<div><b>' + ds + '</b><br>' + esc(dc) + ' &nbsp; ' + qs + '</div>');
+  }
+  $('rHist').innerHTML = rows.join('') || '<div class="mut">لسه مفيش سجل</div>';
+  const cnt = t => QB.filter(q => q.t === t).length;
+  $('rBank').innerHTML = 'مواقف: ' + SCEN.length + ' (بروقرسف ' + SCEN.filter(s => s.cat === 'prog').length + ' • قياسات ' + SCEN.filter(s => s.cat === 'pow').length + ')<br>أسئلة: ' + QB.length + ' (Brillmann ' + cnt('b') + ' • بروقرسف ' + cnt('p') + ' • قياسات ' + cnt('w') + ')<br>اتعمل من المواقف: ' + S.dUsed.length + ' • من الأسئلة: ' + S.qUsed.length;
+}
+
+// ───── الإعدادات والإشعارات ─────
+function nativeSync(){ if (NAT && NAT.schedule) try { NAT.schedule(S.set.d, S.set.q); } catch(e){} }
+function renderSettings(){
+  $('sD').value = S.set.d; $('sQ').value = S.set.q;
+  $('sVer').textContent = 'الإصدار ' + APP_V + (NAT ? ' • APK' : ' • متصفح');
+  if (!NAT) { $('natBox').classList.add('hide'); $('noNat').classList.remove('hide'); return; }
+  let p = '—'; try { p = NAT.notifStatus(); } catch(e){}
+  $('sPerm').textContent = p === 'granted' ? '✅ مسموح' : '❌ مقفول';
+  $('sPerm').style.color = p === 'granted' ? 'var(--grn)' : 'var(--red)';
+}
+$('sSave').onclick = () => {
+  const d = $('sD').value, q = $('sQ').value;
+  if (!d || !q) return toast('⏰ اختار الميعادين');
+  S.set = {d, q}; save(); nativeSync(); renderStats();
+  toast(NAT ? '✅ اتظبطت: 🎯 ' + d + ' • 🧠 ' + q : '✅ اتحفظت (الإشعار من الـ APK)');
+};
+$('sAsk').onclick = () => { try { NAT.askPerm(); } catch(e){} setTimeout(renderSettings, 1500); };
+$('sTest').onclick = () => { try { NAT.test(); toast('🔔 اتبعت إشعار تجربة'); } catch(e){} };
+$('sBat').onclick = () => { try { NAT.battery(); } catch(e){} };
+let resetArm = 0;
+$('sReset').onclick = () => {
+  if (Date.now() - resetArm > 3000) { resetArm = Date.now(); $('sReset').textContent = '⚠️ دوس تاني للتأكيد'; setTimeout(() => $('sReset').textContent = '🗑️ صفّر كل حاجة', 3000); return; }
+  const set = S.set; S = defState(); S.set = set; save(); toast('🧹 اتصفّر'); renderAll();
+};
+window.onPermResult = () => renderSettings();
+
+// ───── التنقل بين الأقسام ─────
+let open = null;
+function showSec(name, scroll = true){
+  document.querySelectorAll('.cur').forEach(c => c.classList.remove('open'));
+  document.querySelectorAll('.tile').forEach(t => t.classList.toggle('on', t.dataset.sec === name && open !== name));
+  if (open === name) { open = null; return; }
+  open = name;
+  if (name === 'drill') renderDrill();
+  if (name === 'quiz') renderQuiz();
+  if (name === 'review') renderReview();
+  if (name === 'settings') renderSettings();
+  $('sec-' + name).classList.add('open');
+  if (scroll) setTimeout(() => $('sec-' + name).scrollIntoView({behavior:'smooth', block:'start'}), 30);
+}
+window.openSec = n => { open = null; showSec(n); };
+window.onBack = () => { if (open) { document.querySelectorAll('.cur').forEach(c => c.classList.remove('open')); document.querySelectorAll('.tile').forEach(t => t.classList.remove('on')); open = null; window.scrollTo({top:0}); return true; } return false; };
+document.querySelectorAll('.tile').forEach(t => t.onclick = () => showSec(t.dataset.sec));
+
+function toast(m){ const t = $('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(() => t.style.display = 'none', 2500); }
+function renderAll(){ renderStats(); if (open) { const o = open; open = null; showSec(o, false); } }
+
+// ───── التحديث ─────
+let remote = null;
+async function checkUpd(){
+  try {
+    const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'}); remote = await r.json();
+    $('badge').style.display = remote.v > APP_V ? 'flex' : 'none';
+  } catch(e){}
+}
+$('updBtn').onclick = async () => {
+  await checkUpd();
+  const c = $('updCard');
+  if (remote && remote.v > APP_V) {
+    c.innerHTML = '<b>🆕 الجديد في التحديث</b><ul>' + (remote.notes || []).map(n => '<li>' + esc(n) + '</li>').join('') + '</ul><div class="two"><button class="btn" id="uNow">حدّث دلوقتي</button><button class="btn sec" id="uLater">بعدين</button></div>';
+    c.classList.remove('hide');
+    $('uNow').onclick = async () => { try { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); const rg = await navigator.serviceWorker?.getRegistration(); await rg?.unregister(); } catch(e){} location.reload(); };
+    $('uLater').onclick = () => c.classList.add('hide');
+  } else toast('✅ عندك آخر إصدار');
+};
+(function afterUpdate(){
+  const lv = +localStorage.getItem('sd_v') || 0;
+  if (lv && lv < APP_V) fetch('version.json', {cache:'no-store'}).then(r => r.json()).then(v => {
+    const c = $('updCard'); c.innerHTML = '<b>✅ اتحدّث</b><ul>' + (v.notes || []).map(n => '<li>' + esc(n) + '</li>').join('') + '</ul><button class="btn sec" id="uOk">تمام</button>'; c.classList.remove('hide'); $('uOk').onclick = () => c.classList.add('hide');
+  }).catch(() => {});
+  localStorage.setItem('sd_v', APP_V);
+})();
+
+// ───── البداية ─────
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+renderStats(); nativeSync(); checkUpd();
+const h = location.hash.replace('#', '');
+if (['drill','quiz','review','settings'].includes(h)) showSec(h);
+window.addEventListener('hashchange', () => { const h = location.hash.replace('#', ''); if (h) window.openSec(h); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { if (curDs && curDs !== today()) renderAll(); else renderStats(); } });
+</script>
+</body>
+</html>
