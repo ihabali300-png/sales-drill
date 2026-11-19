@@ -114,7 +114,7 @@ public final class Alarms {
             case "warm":
                 title = "⚡ جولة سرعة قبل الشيفت — دقيقتين";
                 String plan = prefs(c).getString("plan", "");
-                text = plan.isEmpty() ? "10 اعتراضات.. قول أول خطوة قبل ما الوقت يخلص" : "📌 " + plan;
+                text = plan.isEmpty() ? "10 اعتراضات.. اختار أول خطوة قبل ما الوقت يخلص" : "📌 " + plan;
                 break;
             default: title = "🏪 آخر الشيفت — سجّل أرقامك"; text = "عملاء • تقفيلات • إضافات.. وموقف حقيقي حصلك النهارده";
         }

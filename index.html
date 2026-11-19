@@ -122,7 +122,7 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
 
   <section class="cur" id="sec-drill"><h2>🎯 تمرين البيع</h2><div id="drillBox"></div></section>
   <section class="cur" id="sec-quiz"><h2>🧠 كويز النهارده</h2><div id="qList"></div><div id="qScore" class="score hide"></div></section>
-  <section class="cur" id="sec-warm"><h2>⚡ جولة سرعة — قول أول خطوة قبل ما الوقت يخلص</h2><div id="warmBox"></div></section>
+  <section class="cur" id="sec-warm"><h2>⚡ جولة سرعة — اختار أول خطوة قبل ما الوقت يخلص</h2><div id="warmBox"></div></section>
 
   <section class="cur" id="sec-shift">
     <h2>🏪 آخر الشيفت</h2>
@@ -172,7 +172,7 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
 <script src="scenarios.js"></script>
 <script src="quiz.js"></script>
 <script>
-const APP_V = 2;
+const APP_V = 3;
 const LS = 'sd_state_v1';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/\n/g,'<br>');
@@ -185,10 +185,11 @@ const QB = QUIZ.map(a => ({id:a[0], t:a[1], c:a[2], q:a[3], o:a[4], a:a[5], e:a[
 const QI = {}; QB.forEach(q => QI[q.id] = q);
 const TYPE = {b:'🇩🇪 Brillmann', p:'👓 بروقرسف', w:'📐 قياسات وضع النظارة'};
 const LET = ['أ','ب','ج','د'];
+const STARTERS = ['أتفهمك..','حقك تسأل..','ولا يهمك، نشوفها الحين..','وش تستخدم النظارة فيه أكثر؟','خليني أوريك الفرق..','وش اللي مو مريحك؟'];
 const T = {
-  emp:  ['تبدأ بالتفهّم','اتفهم|فاهمك|فاهم|معك حق|معاك حق|حقك|طبيعي|اكيد|ولا يهمك|يسعدني|اقدر|سؤال منطقي|سؤال مهم|سؤال ممتاز|سؤال في محله','ابدأ بجملة تفهّم قبل أي شرح: «أتفهمك» / «حقك»'],
+  emp:  ['تبدأ بالتفهّم','ابشر|تمام|معك|معاك|صح كلامك|من حقك|اتفهم|فاهمك|فاهم|معك حق|معاك حق|حقك|طبيعي|اكيد|ولا يهمك|يسعدني|اقدر|سؤال منطقي|سؤال مهم|سؤال ممتاز|سؤال في محله','ابدأ بجملة تفهّم قبل أي شرح: «أتفهمك» / «حقك»'],
   ask:  ['تسأل عن الاستخدام','تستخدم|استخدام|شغلك|عملك|طبيعه|كم ساعه|تسوق|شاشه|جوال|؟|?','اختم بسؤال عن استخدامه — السؤال بيرجّع الكلام لاحتياجه'],
-  calm: ['تطمّن العميل','طبيعي|ولا يهمك|اطمن|نضبط|نضبطها|نشوف|نتاكد|حلها|نحلها|بسيط|معليش|اسف|فهمت','طمّنه الأول قبل الفحص: «ولا يهمك، هنشوفها دلوقتي»'],
+  calm: ['تطمّن العميل','ابشر|لا تشيل هم|ما عليك|نعدلها|نظبطها|نراجع|طبيعي|ولا يهمك|اطمن|نضبط|نضبطها|نشوف|نتاكد|حلها|نحلها|بسيط|معليش|اسف|فهمت','طمّنه الأول قبل الفحص: «ولا يهمك، هنشوفها دلوقتي»'],
   close:['تقفل بخطوة جاية','نجرب|نبدا|نقيس|نعتمد|اجهز|نكمل|خلينا|خلني|اوريك|نشوف|تحبين|تحب','اختم بخطوة جاية واضحة: «خليني أوريك» / «نجرب»']
 };
 const norm = s => (s||'').toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
@@ -362,12 +363,13 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-mic]
 
 // ───── تايمر رد الفعل ⏱️ ─────
 let rt = {t0: 0, h: null, marked: true};
+const rtLimit = () => ({1: 15, 2: 10, 3: 5})[level()] || 10;
 function reactionStart(){
   clearInterval(rt.h); rt = {t0: Date.now(), h: null, marked: false};
   rt.h = setInterval(() => {
     const bar = $('rtBar'), msg = $('rtMsg');
-    const left = Math.max(0, 5 - (Date.now() - rt.t0) / 1000);
-    if (bar) { bar.querySelector('i').style.width = (left / 5 * 100) + '%'; bar.classList.toggle('warn', left < 2); }
+    const L = rtLimit(), left = Math.max(0, L - (Date.now() - rt.t0) / 1000);
+    if (bar) { bar.querySelector('i').style.width = (left / L * 100) + '%'; bar.classList.toggle('warn', left < 2); }
     if (left <= 0) { clearInterval(rt.h); if (msg && !rt.marked) msg.textContent = '⏰ العميل بدأ يبص للباب.. ابدأ رد!'; }
   }, 100);
 }
@@ -376,7 +378,7 @@ function reactionMark(){
   rt.marked = true; clearInterval(rt.h);
   const sec = Math.round((Date.now() - rt.t0) / 100) / 10;
   S.rts.push(sec); S.rts = S.rts.slice(-30); save();
-  const msg = $('rtMsg'); if (msg) msg.textContent = (sec <= 5 ? '⚡ بدأت في ' : '🐢 بدأت في ') + sec + ' ثانية';
+  const msg = $('rtMsg'); if (msg) msg.textContent = (sec <= rtLimit() ? '⚡ بدأت في ' : '🐢 بدأت في ') + sec + ' ثانية';
 }
 document.addEventListener('input', e => { if (e.target.id === 'dAns') reactionMark(); });
 
@@ -392,7 +394,7 @@ function renderStats(){
   const w = metSum(today(), 7), cv = pct(w.c, w.v);
   $('stConv').textContent = cv == null ? '—' : cv + '%';
   const d = S.days[today()] || {};
-  $('tDrill').innerHTML = d.d && d.d.done ? '<span class="ok">✔ خلص ' + P(Math.round((d.d.score || 0) * 100)) + '</span>' : 'موقف بيع • مستوى ' + level();
+  $('tDrill').innerHTML = d.d && d.d.done ? '<span class="ok">✔ خلص • ' + Math.round((d.d.score || 0) * (SC[d.d.id] ? SC[d.d.id].k.length : 3)) + ' من ' + (SC[d.d.id] ? SC[d.d.id].k.length : 3) + ' نقط</span>' : 'موقف بيع • مستوى ' + level();
   $('tQuiz').innerHTML = d.q && d.q.done ? '<span class="ok">✔ ' + d.q.items.filter(it => it.a === QI[it.id].a).length + ' من 3</span>' : '3 أسئلة';
   $('tWarm').innerHTML = d.w && d.w.done ? '<span class="ok">✔ ' + d.w.res.filter(Boolean).length + ' من 10 في الوقت</span>' : 'قبل الشيفت • دقيقتين';
   $('tShift').innerHTML = S.met[today()] ? '<span class="ok">✔ الأرقام اتسجلت</span>' : 'أرقامي + موقف حقيقي';
@@ -435,15 +437,22 @@ function renderDrill(){
   let h = '<div class="chips"><span class="chip">' + CATS[s.cat] + '</span>' + (dd.src === 'weak' ? '<span class="chip hot">🔁 رجعلك بعميل تاني</span>' : '') + (dd.src === 'real' ? '<span class="chip hot">🏪 موقفك الحقيقي</span>' : '') + '<span class="chip">🎚️ مستوى ' + dd.lvl + '</span></div>';
   h += '<div class="sit">' + esc(s.s) + '</div>';
   if (!dd.started) {
-    h += '<p class="mut">⏱️ أول ما تدوس، العميل هيتكلم وعندك 5 ثواني تبدأ ترد — زي المحل بالظبط.</p><button class="btn" id="dStart">▶️ ابدأ الموقف</button>';
+    h += '<p class="mut">⏱️ أول ما تدوس، العميل هيتكلم وعندك ' + rtLimit() + ' ثانية تبدأ ترد. الوقت بيقل كل ما مستواك يعلى.</p><button class="btn" id="dStart">▶️ ابدأ الموقف</button>';
     box.innerHTML = h;
     $('dStart').onclick = () => { dd.started = true; save(); renderDrill(); reactionStart(); };
     return;
   }
   h += '<div class="bub">' + esc(s.c) + '</div>';
   if (dd.ans == null) {
-    h += '<div class="bar' + (rt.marked ? ' hide' : '') + '" id="rtBar"><i></i></div><div class="tmsg" id="rtMsg"></div>' + inputBlock('dAns', 'رد على العميل — اكتب أو دوس 🎙️ واتكلم') + '<button class="btn" id="dGo">✍️ شوف التقييم</button>';
+    const help = grade(s.k, '').map(x => '<li>⬜ ' + esc(x.label) + '</li>').join('');
+    const openHelp = dd.lvl === 1 || dd.help;
+    h += '<div class="bar' + (rt.marked ? ' hide' : '') + '" id="rtBar"><i></i></div><div class="tmsg" id="rtMsg"></div>';
+    h += '<div class="acc' + (openHelp ? ' open' : '') + '" id="hAcc" style="margin:0 0 10px"><button>💡 مساعدة: ردك المفروض فيه إيه؟ <span>⌄</span></button><div><ul class="chk">' + help + '</ul><div class="mut" style="margin-top:8px">ابدأ بجملة من دول (دوس عليها):</div><div class="chips" style="margin-top:6px">' + STARTERS.map(x => '<button class="chip" data-st2="' + esc(x) + '">' + esc(x) + '</button>').join('') + '</div><button class="btn sec" id="dFirst" style="padding:8px;font-size:14px">🙋 مش عارف أبدأ — وريني أول خطوة</button><div id="dFirstOut"></div></div></div>';
+    h += inputBlock('dAns', 'رد على العميل — اكتب أو دوس 🎙️ واتكلم') + '<button class="btn" id="dGo">✍️ شوف التقييم</button>';
     box.innerHTML = h;
+    $('hAcc').firstChild.onclick = () => { $('hAcc').classList.toggle('open'); dd.help = true; reactionMark(); };
+    box.querySelectorAll('[data-st2]').forEach(b => b.onclick = () => { const ta = $('dAns'); ta.value = (ta.value ? ta.value.trim() + ' ' : '') + b.dataset.st2 + ' '; ta.focus(); reactionMark(); });
+    $('dFirst').onclick = () => { reactionMark(); const k = grade(s.k, '')[0]; $('dFirstOut').innerHTML = '<div class="box fix"><h3>👣 أول خطوة</h3>' + esc(k.tip) + '</div>'; dd.hinted = true; save(); };
     $('dGo').onclick = () => {
       const v = $('dAns').value.trim(); if (v.length < 10) return toast('✍️ اكتب ردك كامل الأول');
       micStop(); reactionMark();
@@ -453,11 +462,12 @@ function renderDrill(){
     return;
   }
   const g = grade(s.k, dd.ans), miss = g.find(x => !x.hit);
-  h += '<div class="box"><h3>📝 ردك — ' + P(Math.round(dd.score * 100)) + '</h3>' + esc(dd.ans) + chkHtml(g) + '</div>';
+  const hits = g.filter(x => x.hit).length;
+  h += '<div class="box"><h3>📝 ردك — ' + '⭐'.repeat(hits) + '☆'.repeat(g.length - hits) + ' (' + hits + ' من ' + g.length + ' نقط)</h3>' + esc(dd.ans) + chkHtml(g) + '</div>';
   h += '<div class="box best"><h3>✅ ' + (dd.src === 'real' ? 'رد نموذجي لموقف شبهه' : 'الرد الأحسن') + '</h3>' + esc(s.m) + '</div>';
   h += '<div class="box fix"><h3>🔧 حاجة واحدة تتظبط</h3>' + (miss ? esc(miss.tip) : '✨ غطّيت النقط الأساسية! لمسة زيادة: ' + esc(s.p)) + '</div>';
   h += '<div class="box rule"><h3>🧠 القاعدة</h3>' + esc(s.r) + '</div>';
-  if (dd.score < 0.5 && dd.src !== 'real') h += '<p class="mut">🔁 الموقف ده هيرجعلك بعميل تاني بعد 4 أيام</p>';
+  if (dd.score < 0.5 && dd.src !== 'real') h += '<p class="mut">🔁 عادي جداً — الموقف ده هيرجعلك بعميل تاني بعد 4 أيام، والمرة الجاية هتبقى أسهل</p>';
   const turns = turnsOf(dd, s);
   let allDone = true;
   for (let i = 0; i < turns.length; i++) {
@@ -496,30 +506,43 @@ function pickWarm(ds){
   save();
   return day.w;
 }
+const firstStep = s => s.r.replace(/^🧠\s*/, '');
+function warmLimit(){ return S.warmT || 10; }
 function renderWarm(){
   clearInterval(wt.h);
   const ds = curDs = today(), w = pickWarm(ds), box = $('warmBox'), i = w.res.length;
   const p = S.days[ds].plan;
   const h = p && p.set ? '<div class="plan" style="margin-bottom:10px"><div class="mut">📌 خطتك النهارده</div><div class="pl">' + esc(planLine(p)) + '</div></div>' : '';
   if (i >= w.ids.length) {
-    const fast = w.res.filter(Boolean).length;
-    if (!w.done) { w.done = true; save(); renderStats(); }
-    box.innerHTML = h + '<div class="wcard"><div class="big">' + fast + ' / 10</div><div>' + (fast >= 8 ? '🔥 ردودك بقت تلقائية' : fast >= 5 ? '👏 قربت.. كرر بكرة' : '💪 الجولة دي اللي بتبني رد الفعل') + '</div></div><button class="btn sec" id="wAgain">🔁 جولة تانية للتمرين</button>';
+    const good = w.res.filter(Boolean).length;
+    if (!w.done) {
+      w.done = true;
+      const L = warmLimit();
+      S.warmT = good >= 8 ? Math.max(4, L - 2) : good <= 4 ? Math.min(14, L + 2) : L;   // الوقت بيقل لما تتحسن
+      save(); renderStats();
+    }
+    box.innerHTML = h + '<div class="wcard"><div class="big">' + good + ' / 10</div><div>' + (good >= 8 ? '🔥 ردودك بقت تلقائية — الجولة الجاية أسرع' : good >= 5 ? '👏 قربت.. كرر بكرة' : '💪 عادي — الجولة الجاية هتديك وقت أكتر') + '</div><div class="mut">⏱️ وقت كل اعتراض الجولة الجاية: ' + warmLimit() + ' ثانية</div></div><button class="btn sec" id="wAgain">🔁 جولة تانية للتمرين</button>';
     $('wAgain').onclick = () => { w.ids = SCEN.slice().sort(() => Math.random() - .5).slice(0, 10).map(s => s.id); w.res = []; w.rev = null; save(); renderWarm(); };
     return;
   }
   const s = SC[w.ids[i]];
+  if (!w.opts || w.opts.i !== i) {
+    const others = SCEN.filter(x => x.cat !== s.cat && firstStep(x) !== firstStep(s)).sort(() => Math.random() - .5).slice(0, 2);
+    const o = [s, ...others].map(x => x.id).sort(() => Math.random() - .5);
+    w.opts = {i, o}; save();
+  }
   if (w.rev === i) {
-    box.innerHTML = h + '<div class="wcard"><div class="mut">' + (i + 1) + ' من 10 • ' + CATS[s.cat] + (w.inTime ? ' • ⚡ في الوقت' : ' • ⏰ الوقت خلص') + '</div><div class="bub">' + esc(s.c) + '</div><div class="box rule"><h3>أول خطوة</h3>' + esc(s.r) + '</div></div><div class="two"><button class="btn" id="wOk">✅ قلتها صح</button><button class="btn sec" id="wNo">❌ لأ</button></div>';
-    const fin = v => { w.res[i] = !!(v && w.inTime); w.rev = null; save(); renderWarm(); };
-    $('wOk').onclick = () => fin(true); $('wNo').onclick = () => fin(false);
+    const ok = w.pick === s.id;
+    box.innerHTML = h + '<div class="wcard"><div class="mut">' + (i + 1) + ' من 10 • ' + CATS[s.cat] + '</div><div class="bub">' + esc(s.c) + '</div><div class="box ' + (ok && w.inTime ? 'best' : 'fix') + '"><h3>' + (ok ? (w.inTime ? '✅ صح وفي الوقت' : '✅ صح بس الوقت خلص') : (w.pick ? '❌ مش دي' : '⏰ الوقت خلص')) + '</h3>الطريقة الصح: ' + esc(firstStep(s)) + '</div></div><button class="btn" id="wNext">التالي ←</button>';
+    $('wNext').onclick = () => { w.res[i] = ok && w.inTime; w.rev = null; save(); renderWarm(); };
     return;
   }
-  box.innerHTML = h + '<div class="wcard"><div class="mut">' + (i + 1) + ' من 10 • قول أول خطوة بصوت عالي</div><div class="bub">' + esc(s.c) + '</div><div class="bar" id="wBar"><i></i></div></div><button class="btn" id="wSaid">🗣️ قلتها!</button>';
+  const L = warmLimit();
+  box.innerHTML = h + '<div class="wcard"><div class="mut">' + (i + 1) + ' من 10 • اختار أول خطوة صح</div><div class="bub">' + esc(s.c) + '</div><div class="bar" id="wBar"><i></i></div></div>' + w.opts.o.map((id, k) => '<button class="opt" data-w="' + id + '"><span class="l">' + LET[k] + '</span><span>' + esc(firstStep(SC[id])) + '</span></button>').join('');
   const t0 = Date.now();
-  const reveal = inTime => { clearInterval(wt.h); w.inTime = inTime; w.rev = i; save(); renderWarm(); };
-  wt.h = setInterval(() => { const b = $('wBar'); if (!b) return clearInterval(wt.h); const left = Math.max(0, 5 - (Date.now() - t0) / 1000); b.querySelector('i').style.width = left / 5 * 100 + '%'; b.classList.toggle('warn', left < 2); if (left <= 0) reveal(false); }, 100);
-  $('wSaid').onclick = () => reveal(true);
+  const reveal = (pick, inTime) => { clearInterval(wt.h); w.pick = pick; w.inTime = inTime; w.rev = i; save(); renderWarm(); };
+  wt.h = setInterval(() => { const b = $('wBar'); if (!b) return clearInterval(wt.h); const left = Math.max(0, L - (Date.now() - t0) / 1000); b.querySelector('i').style.width = left / L * 100 + '%'; b.classList.toggle('warn', left < L * 0.3); if (left <= 0) reveal(null, false); }, 100);
+  box.querySelectorAll('[data-w]').forEach(b => b.onclick = () => reveal(b.dataset.w, (Date.now() - t0) / 1000 <= L));
 }
 
 // ───── رسم الكويز 🧠 ─────
