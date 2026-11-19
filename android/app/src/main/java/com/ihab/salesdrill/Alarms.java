@@ -16,38 +16,75 @@ import java.util.Calendar;
 public final class Alarms {
     static final String PREFS = "alarms";
     static final String CH = "daily_training";
-    static final String DEF_DRILL = "17:30", DEF_QUIZ = "21:00";
+    static final String[] TYPES = {"drill", "quiz", "warm", "log"};
 
     static SharedPreferences prefs(Context c) { return c.getSharedPreferences(PREFS, Context.MODE_PRIVATE); }
+
+    static String def(String type) {
+        switch (type) {
+            case "drill": return "17:30";
+            case "quiz": return "21:00";
+            case "warm": return "18:15";
+            case "warm_fri": return "15:15";
+            default: return "23:35";
+        }
+    }
+
+    static int code(String type) {
+        switch (type) { case "drill": return 101; case "quiz": return 102; case "warm": return 103; default: return 104; }
+    }
+
+    static String sec(String type) { return "log".equals(type) ? "shift" : type; }
 
     static void save(Context c, String drill, String quiz) {
         prefs(c).edit().putString("drill", drill).putString("quiz", quiz).apply();
         scheduleAll(c);
     }
 
-    static void scheduleAll(Context c) {
-        SharedPreferences p = prefs(c);
-        schedule(c, "drill", p.getString("drill", DEF_DRILL));
-        schedule(c, "quiz", p.getString("quiz", DEF_QUIZ));
+    static void saveJson(Context c, String json) {
+        try {
+            org.json.JSONObject o = new org.json.JSONObject(json);
+            SharedPreferences.Editor e = prefs(c).edit();
+            for (String k : new String[]{"drill", "quiz", "warm", "warm_fri", "log"})
+                if (o.has(k)) e.putString(k, o.getString(k));
+            e.apply();
+        } catch (Exception ignored) { }
+        scheduleAll(c);
     }
 
-    static int code(String type) { return "drill".equals(type) ? 101 : 102; }
+    static void scheduleAll(Context c) { for (String t : TYPES) schedule(c, t); }
 
-    static void schedule(Context c, String type, String hhmm) {
-        int h, m;
-        try { String[] a = hhmm.split(":"); h = Integer.parseInt(a[0]); m = Integer.parseInt(a[1]); }
-        catch (Exception e) { return; }
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, h); cal.set(Calendar.MINUTE, m);
-        cal.set(Calendar.SECOND, 0); cal.set(Calendar.MILLISECOND, 0);
-        if (cal.getTimeInMillis() <= System.currentTimeMillis() + 1000) cal.add(Calendar.DAY_OF_YEAR, 1);
+    static int[] parse(String hhmm) {
+        try { String[] a = hhmm.split(":"); return new int[]{Integer.parseInt(a[0]), Integer.parseInt(a[1])}; }
+        catch (Exception e) { return null; }
+    }
 
+    /** أقرب ميعاد جاي — الجولة يوم الجمعة ليها ميعاد مختلف */
+    static long next(Context c, String type) {
+        SharedPreferences p = prefs(c);
+        long now = System.currentTimeMillis();
+        for (int add = 0; add <= 8; add++) {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_YEAR, add);
+            boolean fri = cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;
+            String key = ("warm".equals(type) && fri) ? "warm_fri" : type;
+            int[] hm = parse(p.getString(key, def(key)));
+            if (hm == null) return -1;
+            cal.set(Calendar.HOUR_OF_DAY, hm[0]); cal.set(Calendar.MINUTE, hm[1]);
+            cal.set(Calendar.SECOND, 0); cal.set(Calendar.MILLISECOND, 0);
+            if (cal.getTimeInMillis() > now + 1000) return cal.getTimeInMillis();
+        }
+        return -1;
+    }
+
+    static void schedule(Context c, String type) {
+        long t = next(c, type);
         Intent i = new Intent(c, AlarmReceiver.class).setAction("com.ihab.salesdrill.ALARM_" + type).putExtra("type", type);
         PendingIntent pi = PendingIntent.getBroadcast(c, code(type), i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
         if (am == null) return;
         am.cancel(pi);
-        long t = cal.getTimeInMillis();
+        if (t < 0) return;
         boolean exact = Build.VERSION.SDK_INT < 31 || am.canScheduleExactAlarms();
         try {
             if (exact) am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, t, pi);
@@ -62,7 +99,7 @@ public final class Alarms {
             NotificationManager nm = c.getSystemService(NotificationManager.class);
             if (nm.getNotificationChannel(CH) == null) {
                 NotificationChannel ch = new NotificationChannel(CH, "التمرين اليومي", NotificationManager.IMPORTANCE_HIGH);
-                ch.setDescription("تمرين البيع والكويز اليومي");
+                ch.setDescription("تمرين البيع والكويز وجولة السرعة وآخر الشيفت");
                 nm.createNotificationChannel(ch);
             }
         }
@@ -70,10 +107,18 @@ public final class Alarms {
 
     static void notify(Context c, String type) {
         ensureChannel(c);
-        boolean drill = "drill".equals(type);
-        String title = drill ? "🎯 تمرين البيع النهارده جاهز" : "🧠 كويز النهارده — 3 أسئلة";
-        String text = drill ? "عميل مستنيك.. اكتب ردك وشوف التقييم 🔥" : "Brillmann وبروقرسف وقياسات — يلا نشوف 💪";
-        Intent open = new Intent(c, MainActivity.class).putExtra("sec", type)
+        String title, text;
+        switch (type) {
+            case "drill": title = "🎯 تمرين البيع النهارده جاهز"; text = "عميل مستنيك.. عندك 5 ثواني تبدأ ترد 🔥"; break;
+            case "quiz": title = "🧠 كويز النهارده — 3 أسئلة"; text = "Brillmann وبروقرسف وقياسات — يلا نشوف 💪"; break;
+            case "warm":
+                title = "⚡ جولة سرعة قبل الشيفت — دقيقتين";
+                String plan = prefs(c).getString("plan", "");
+                text = plan.isEmpty() ? "10 اعتراضات.. قول أول خطوة قبل ما الوقت يخلص" : "📌 " + plan;
+                break;
+            default: title = "🏪 آخر الشيفت — سجّل أرقامك"; text = "عملاء • تقفيلات • إضافات.. وموقف حقيقي حصلك النهارده";
+        }
+        Intent open = new Intent(c, MainActivity.class).putExtra("sec", sec(type))
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pi = PendingIntent.getActivity(c, code(type) + 10, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         Notification.Builder b = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(c, CH) : new Notification.Builder(c);

@@ -16,26 +16,32 @@ header h1{font-size:19px;margin:0;flex:1}
 .ib{position:relative;background:var(--card);border:1px solid var(--line);color:var(--txt);width:40px;height:40px;border-radius:12px;font-size:19px}
 .badge{position:absolute;top:-5px;left:-5px;background:#ef4444;color:#fff;font-size:11px;min-width:17px;height:17px;border-radius:4px;display:none;align-items:center;justify-content:center;font-weight:700}
 main{padding:12px;max-width:720px;margin:auto}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.st{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center}
-.st b{display:block;font-size:22px;color:var(--lime)}
-.st span{font-size:12px;color:var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 4px;text-align:center}
+.st b{display:block;font-size:20px;color:var(--lime)}
+.st span{font-size:11px;color:var(--mut)}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 10px;text-align:center;color:var(--txt);font-size:15px;font-weight:600}
-.tile .e{font-size:30px;display:block}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 8px;text-align:center;color:var(--txt);font-size:15px;font-weight:600;font-family:inherit}
+.tile .e{font-size:28px;display:block}
 .tile small{display:block;color:var(--mut);font-weight:400;font-size:12px;margin-top:2px}
 .tile.on{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime) inset}
-.tile .ok{color:var(--grn)}
+.ok{color:var(--grn)}
 .cur{display:none;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;animation:dn .25s ease}
 .cur.open{display:block}
 @keyframes dn{from{opacity:0;transform:translateY(-6px)}to{opacity:1}}
 h2{font-size:17px;margin:0 0 10px;color:var(--lime)}
-.chip{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:2px 12px;font-size:13px;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:2px 12px;font-size:13px}
+.chip.hot{border-color:var(--amb);color:var(--amb)}
 .sit{background:var(--card2);border-radius:12px;padding:10px 12px;margin-bottom:10px;white-space:pre-line}
 .bub{background:#1f3a24;border:1px solid #2f5a36;border-radius:16px 16px 16px 4px;padding:10px 14px;margin:8px 0 12px;font-weight:600}
 .bub:before{content:"🗣️ العميل: ";color:var(--lime);font-weight:700}
-textarea{width:100%;min-height:110px;background:#0e1a11;color:var(--txt);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;resize:vertical}
-textarea:focus{outline:none;border-color:var(--lime)}
+.ta-wrap{position:relative}
+textarea{width:100%;background:#0e1a11;color:var(--txt);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;min-height:100px;resize:vertical;padding-bottom:52px}
+textarea:focus,input:focus{outline:none;border-color:var(--lime)}
+.mic{position:absolute;bottom:8px;left:8px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card2);font-size:20px;color:var(--txt)}
+.mic.rec{background:#7f1d1d;border-color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(248,113,113,.15)}}
 .btn{display:block;width:100%;margin-top:10px;background:var(--lime);color:#13200f;border:0;border-radius:12px;padding:12px;font:inherit;font-weight:700;font-size:16px}
 .btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
 .btn.dng{background:#3b1111;color:#fecaca;border:1px solid #7f1d1d}
@@ -45,8 +51,11 @@ textarea:focus{outline:none;border-color:var(--lime)}
 .box.fix{border-color:#6b5a1a}.box.fix h3{color:var(--amb)}
 .box.rule{border-color:var(--lime);background:#1c2c12}.box.rule h3{color:var(--lime)}
 .chk{list-style:none;padding:0;margin:6px 0 0;font-size:14px}
-.chk li{padding:2px 0}
 .hide{display:none!important}
+.bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--lime);width:100%;transition:width .1s linear}
+.bar.warn i{background:var(--red)}
+.tmsg{font-size:13px;color:var(--amb);min-height:20px}
 .q{background:var(--card2);border-radius:14px;padding:12px;margin-bottom:12px}
 .q .qh{font-size:12px;color:var(--mut);margin-bottom:4px}
 .q .qt{font-weight:700;margin-bottom:8px}
@@ -56,14 +65,34 @@ textarea:focus{outline:none;border-color:var(--lime)}
 .exp{margin-top:6px;font-size:14px;background:#0e1a11;border-radius:10px;padding:8px 10px}
 .row{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
 .row:last-child{border:0}
-input[type=time]{background:#0e1a11;color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:18px;color-scheme:dark}
+input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:17px;color-scheme:dark}
 .mut{color:var(--mut);font-size:13px}
-.score{font-size:22px;text-align:center;font-weight:800;color:var(--lime);margin:6px 0}
+.score{font-size:22px;text-align:center;font-weight:800;color:var(--lime);margin:8px 0}
 .hist div{padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
 .toast{position:fixed;bottom:18px;right:50%;transform:translateX(50%);background:var(--lime);color:#13200f;padding:10px 18px;border-radius:12px;font-weight:700;z-index:20;display:none;max-width:90%}
-.upd{background:#1c2c12;border:1px solid var(--lime);border-radius:14px;padding:12px;margin-bottom:12px}
+.upd,.plan{background:#1c2c12;border:1px solid var(--lime);border-radius:14px;padding:12px;margin-bottom:12px}
+.plan .pl{font-weight:700}
+.plan .pl em{font-style:normal;color:var(--lime)}
 .upd ul{margin:6px 0;padding-inline-start:18px}
 .two{display:flex;gap:8px}.two .btn{margin-top:6px}
+.acc{border:1px solid var(--line);border-radius:12px;margin-top:10px;overflow:hidden}
+.acc>button{width:100%;background:var(--card2);color:var(--txt);border:0;padding:12px;font:inherit;font-weight:700;text-align:right;display:flex;justify-content:space-between}
+.acc>div{padding:12px;display:none}
+.acc.open>div{display:block}
+.cells{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.cell{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}
+.cell label{display:block;font-size:12px;color:var(--mut)}
+.step{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px}
+.step button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#0e1a11;color:var(--lime);font-size:20px;font-weight:700}
+.step input{width:80px;text-align:center;background:transparent;border:0;color:var(--txt);font:inherit;font-size:20px;font-weight:700}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.kpi div{background:#0e1a11;border-radius:12px;padding:8px;text-align:center}
+.kpi b{display:block;font-size:19px;color:var(--lime)}
+.kpi span{font-size:11px;color:var(--mut)}
+.up{color:var(--grn)}.dn{color:var(--red)}
+.wcard{background:var(--card2);border-radius:14px;padding:14px;text-align:center}
+.wcard .bub,.wcard .box{text-align:right}
+.big{font-size:44px;font-weight:800;color:var(--lime)}
 </style>
 </head>
 <body>
@@ -73,72 +102,54 @@ input[type=time]{background:#0e1a11;color:var(--txt);border:1px solid var(--line
 </header>
 <main>
   <div id="updCard" class="upd hide"></div>
+  <div id="planCard" class="plan"></div>
 
   <div class="stats">
-    <div class="st"><b id="stStreak">0</b><span>🔥 أيام متتالية</span></div>
-    <div class="st"><b id="stAcc">—</b><span>✅ نسبة صح الكويز</span></div>
-    <div class="st"><b id="stWrong">0</b><span>🔁 مستني مراجعة</span></div>
+    <div class="st"><b id="stStreak">0</b><span>🔥 متتالية</span></div>
+    <div class="st"><b id="stAcc">—</b><span>✅ الكويز</span></div>
+    <div class="st"><b id="stLvl">1</b><span>🎚️ المستوى</span></div>
+    <div class="st"><b id="stConv">—</b><span>📈 تقفيل 7 أيام</span></div>
   </div>
 
   <div class="tiles">
     <button class="tile" data-sec="drill"><span class="e">🎯</span>تمرين النهارده<small id="tDrill">موقف بيع</small></button>
     <button class="tile" data-sec="quiz"><span class="e">🧠</span>كويز النهارده<small id="tQuiz">3 أسئلة</small></button>
-    <button class="tile" data-sec="review"><span class="e">📊</span>المراجعة والسجل<small>الغلط + آخر أيام</small></button>
-    <button class="tile" data-sec="settings"><span class="e">⚙️</span>الإعدادات<small id="tSet">مواعيد الإشعارات</small></button>
+    <button class="tile" data-sec="warm"><span class="e">⚡</span>جولة سرعة<small id="tWarm">قبل الشيفت • دقيقتين</small></button>
+    <button class="tile" data-sec="shift"><span class="e">🏪</span>آخر الشيفت<small id="tShift">أرقامي + موقف حقيقي</small></button>
+    <button class="tile" data-sec="review"><span class="e">📊</span>المراجعة والسجل<small id="tRev">الغلط + آخر أيام</small></button>
+    <button class="tile" data-sec="settings"><span class="e">⚙️</span>الإعدادات<small>المواعيد والمستوى</small></button>
   </div>
 
-  <!-- تمرين البيع -->
-  <section class="cur" id="sec-drill">
-    <h2>🎯 تمرين البيع</h2>
-    <span class="chip" id="dCat"></span>
-    <div class="sit" id="dSit"></div>
-    <div class="bub" id="dCust"></div>
-    <div id="dStep1">
-      <textarea id="dAns" placeholder="اكتب ردك على العميل هنا كأنك قدامه..."></textarea>
-      <button class="btn" id="dGo">✍️ شوف التقييم</button>
-    </div>
-    <div id="dRes" class="hide">
-      <div class="box"><h3>📝 ردك</h3><div id="dMine"></div><ul class="chk" id="dChk"></ul></div>
-      <div class="box best"><h3>✅ الرد الأحسن</h3><div id="dBest"></div></div>
-      <div class="box fix"><h3>🔧 حاجة واحدة تتظبط</h3><div id="dFix"></div></div>
-      <div class="box rule"><h3>🧠 القاعدة</h3><div id="dRule"></div></div>
-      <h2 style="margin-top:16px">↩️ العميل رد عليك</h2>
-      <div class="bub" id="dF"></div>
-      <div id="dStep2">
-        <textarea id="dFAns" placeholder="رد عليه بجملة أو اتنين..."></textarea>
-        <button class="btn" id="dFGo">👀 شوف الرد النموذجي</button>
-      </div>
-      <div id="dFRes" class="hide">
-        <div class="box"><h3>📝 ردك</h3><div id="dFMine"></div></div>
-        <div class="box best"><h3>✅ الرد النموذجي</h3><div id="dFR"></div></div>
-        <div class="score">🔥 تمرين النهارده خلص</div>
-      </div>
-    </div>
+  <section class="cur" id="sec-drill"><h2>🎯 تمرين البيع</h2><div id="drillBox"></div></section>
+  <section class="cur" id="sec-quiz"><h2>🧠 كويز النهارده</h2><div id="qList"></div><div id="qScore" class="score hide"></div></section>
+  <section class="cur" id="sec-warm"><h2>⚡ جولة سرعة — قول أول خطوة قبل ما الوقت يخلص</h2><div id="warmBox"></div></section>
+
+  <section class="cur" id="sec-shift">
+    <h2>🏪 آخر الشيفت</h2>
+    <div class="acc" id="accMet"><button>📈 أرقام النهارده <span>⌄</span></button><div id="metBox"></div></div>
+    <div class="acc" id="accReal"><button>🏪 سجّل موقف حقيقي حصلك <span>⌄</span></button><div id="realBox"></div></div>
   </section>
 
-  <!-- الكويز -->
-  <section class="cur" id="sec-quiz">
-    <h2>🧠 كويز النهارده</h2>
-    <div id="qList"></div>
-    <div id="qScore" class="score hide"></div>
-  </section>
-
-  <!-- المراجعة -->
   <section class="cur" id="sec-review">
-    <h2>🔁 أسئلة هترجعلك بصيغة تانية</h2>
+    <h2>🔁 هيرجعلك قريب</h2>
     <div id="rWrong" class="hist"></div>
     <h2 style="margin-top:14px">📅 آخر 14 يوم</h2>
     <div id="rHist" class="hist"></div>
-    <h2 style="margin-top:14px">📚 البنك</h2>
+    <h2 style="margin-top:14px">📚 أرقامك في التمرين</h2>
     <div id="rBank" class="mut"></div>
   </section>
 
-  <!-- الإعدادات -->
   <section class="cur" id="sec-settings">
     <h2>⏰ مواعيد الإشعارات</h2>
     <div class="row"><span>🎯 تمرين البيع</span><input type="time" id="sD"></div>
+    <div class="row"><span>⚡ جولة السرعة</span><input type="time" id="sW"></div>
+    <div class="row"><span>⚡ الجولة يوم الجمعة</span><input type="time" id="sWF"></div>
     <div class="row"><span>🧠 الكويز</span><input type="time" id="sQ"></div>
-    <button class="btn" id="sSave">💾 احفظ المواعيد</button>
+    <div class="row"><span>🏪 آخر الشيفت</span><input type="time" id="sL"></div>
+    <h2 style="margin-top:14px">🎚️ مستوى الصعوبة</h2>
+    <div class="row"><span>المستوى</span>
+      <select id="sLvl"><option value="auto">تلقائي حسب أدائك</option><option value="1">1 — اعتراض + رد</option><option value="2">2 — + اعتراض تاني</option><option value="3">3 — + اقفل البيعة</option></select></div>
+    <button class="btn" id="sSave">💾 احفظ</button>
     <div id="natBox">
       <div class="row"><span>🔔 إذن الإشعارات</span><b id="sPerm">—</b></div>
       <div class="two">
@@ -146,7 +157,8 @@ input[type=time]{background:#0e1a11;color:var(--txt);border:1px solid var(--line
         <button class="btn sec" id="sTest">🔔 جرّب إشعار</button>
       </div>
       <button class="btn sec" id="sBat">🔋 البطارية: خلّيه «غير مقيّد»</button>
-      <p class="mut">على سامسونج: الإعدادات ← التطبيقات ← تمارين البيع ← البطارية ← غير مقيّد، عشان الإشعار ييجي في ميعاده.</p>
+      <p class="mut">على سامسونج: الإعدادات ← التطبيقات ← تمارين البيع ← البطارية ← غير مقيّد.</p>
+      <p class="mut hide" id="oldApk">⚠️ عندك APK قديم — نزّل الجديد عشان المايك وإشعارات الجولة وآخر الشيفت.</p>
     </div>
     <p class="mut hide" id="noNat">⚠️ الإشعارات بتشتغل من تطبيق الـ APK بس، مش من المتصفح.</p>
     <h2 style="margin-top:14px">🧹 البيانات</h2>
@@ -160,11 +172,12 @@ input[type=time]{background:#0e1a11;color:var(--txt);border:1px solid var(--line
 <script src="scenarios.js"></script>
 <script src="quiz.js"></script>
 <script>
-const APP_V = 1;
+const APP_V = 2;
 const LS = 'sd_state_v1';
 const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/\n/g,'<br>');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/\n/g,'<br>');
 const NAT = window.Android || null;
+const P = n => '<bdi dir="ltr">' + n + '%</bdi>';
 
 // ───── البيانات ─────
 const SC = {}; SCEN.forEach(s => SC[s.id] = s);
@@ -173,16 +186,17 @@ const QI = {}; QB.forEach(q => QI[q.id] = q);
 const TYPE = {b:'🇩🇪 Brillmann', p:'👓 بروقرسف', w:'📐 قياسات وضع النظارة'};
 const LET = ['أ','ب','ج','د'];
 const T = {
-  emp:  ['تبدأ بالتفهّم','اتفهم|فاهمك|فاهم|معك حق|معاك حق|حقك|طبيعي|اكيد|ولا يهمك|يسعدني|اقدر|سؤال منطقي|سؤال مهم|سؤال ممتاز','ابدأ بجملة تفهّم قبل أي شرح: «أتفهمك» / «حقك»'],
+  emp:  ['تبدأ بالتفهّم','اتفهم|فاهمك|فاهم|معك حق|معاك حق|حقك|طبيعي|اكيد|ولا يهمك|يسعدني|اقدر|سؤال منطقي|سؤال مهم|سؤال ممتاز|سؤال في محله','ابدأ بجملة تفهّم قبل أي شرح: «أتفهمك» / «حقك»'],
   ask:  ['تسأل عن الاستخدام','تستخدم|استخدام|شغلك|عملك|طبيعه|كم ساعه|تسوق|شاشه|جوال|؟|?','اختم بسؤال عن استخدامه — السؤال بيرجّع الكلام لاحتياجه'],
   calm: ['تطمّن العميل','طبيعي|ولا يهمك|اطمن|نضبط|نضبطها|نشوف|نتاكد|حلها|نحلها|بسيط|معليش|اسف|فهمت','طمّنه الأول قبل الفحص: «ولا يهمك، هنشوفها دلوقتي»'],
   close:['تقفل بخطوة جاية','نجرب|نبدا|نقيس|نعتمد|اجهز|نكمل|خلينا|خلني|اوريك|نشوف|تحبين|تحب','اختم بخطوة جاية واضحة: «خليني أوريك» / «نجرب»']
 };
 const norm = s => (s||'').toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
 
-function defState(){ return {dUsed:[], qUsed:[], cSeen:[], days:{}, wrong:[], qt:0, qr:0, set:{d:'17:30', q:'21:00'}} }
+function defSet(){ return {d:'17:30', q:'21:00', w:'18:15', wf:'15:15', l:'23:35', lvl:'auto'}; }
+function defState(){ return {dUsed:[], qUsed:[], cSeen:[], days:{}, wrong:[], qt:0, qr:0, dWeak:[], real:[], met:{}, rts:[], set:defSet()}; }
 let S;
-try { S = Object.assign(defState(), JSON.parse(localStorage.getItem(LS) || '{}')); } catch(e){ S = defState(); }
+try { S = Object.assign(defState(), JSON.parse(localStorage.getItem(LS) || '{}')); S.set = Object.assign(defSet(), S.set); } catch(e){ S = defState(); }
 function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e){} }
 
 // ───── التاريخ والعشوائي الثابت ─────
@@ -191,40 +205,84 @@ const today = () => fmt(new Date());
 function addDays(ds, n){ const [y,m,d] = ds.split('-').map(Number); return fmt(new Date(y, m-1, d+n)); }
 function dayNum(ds){ const [y,m,d] = ds.split('-').map(Number); return Math.round((Date.UTC(y,m-1,d) - Date.UTC(2026,0,1)) / 864e5); }
 function seeded(str){ let h = 2166136261; for (const ch of str) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+const pickS = (arr, key) => arr[Math.floor(seeded(key) * arr.length)];
+const dayObj = ds => S.days[ds] || (S.days[ds] = {});
+
+// ───── المستوى 🎚️ ─────
+function autoLevel(){
+  const done = Object.keys(S.days).sort().map(k => S.days[k].d).filter(d => d && d.done && typeof d.score === 'number');
+  const last = done.slice(-10), avg = last.length ? last.reduce((a, d) => a + d.score, 0) / last.length : 0;
+  if (done.length >= 20 && avg >= 0.7) return 3;
+  if (done.length >= 7 && avg >= 0.6) return 2;
+  return 1;
+}
+const level = () => S.set.lvl === 'auto' ? autoLevel() : +S.set.lvl;
 
 // ───── اختيار موقف اليوم ─────
 function catOn(ds){ const x = S.days[ds]; return x && x.d && SC[x.d.id] ? SC[x.d.id].cat : null; }
+function sibling(w, ds){
+  const sib = SCEN.filter(x => x.cat === w.cat && x.id !== w.id);
+  const un = sib.filter(x => !S.dUsed.includes(x.id));
+  return pickS(un.length ? un : sib.length ? sib : [SC[w.id]], ds + w.id);
+}
 function pickDrill(ds){
-  const day = S.days[ds] || (S.days[ds] = {});
+  const day = dayObj(ds);
   if (day.d && SC[day.d.id]) return day.d;
   const recent = n => { const a = []; for (let i = 1; i <= n; i++) a.push(catOn(addDays(ds, -i))); return a; };
-  let pool;
+  let pool = null;
   if (!recent(2).includes('prog')) pool = 'prog';          // بروقرسف مرة على الأقل كل 3 أيام
   else if (!recent(5).includes('pow')) pool = 'pow';       // شكوى قياسات مرة كل أسبوع
-  let s;
-  if (pool) {
+  const due = S.dWeak.filter(w => w.due <= ds && SC[w.id]);
+  let s, src = 'scen', wid = null, rid = null;
+  const wDue = pool ? due.find(w => w.cat === pool) : due.find(w => w.cat !== 'prog' && w.cat !== 'pow');
+  if (wDue) { s = sibling(wDue, ds); src = 'weak'; wid = wDue.id; }
+  else if (pool) {
     const all = SCEN.filter(x => x.cat === pool);
     let av = all.filter(x => !S.dUsed.includes(x.id));
     if (!av.length) { S.dUsed = S.dUsed.filter(id => SC[id] && SC[id].cat !== pool); av = all; }
-    s = av[Math.floor(seeded(ds + pool) * av.length)];
+    s = pickS(av, ds + pool);
   } else {
-    let av = SCEN.filter(x => x.cat !== 'prog' && x.cat !== 'pow' && !S.dUsed.includes(x.id));
-    if (!av.length) { S.dUsed = S.dUsed.filter(id => SC[id] && (SC[id].cat === 'prog' || SC[id].cat === 'pow')); av = SCEN.filter(x => x.cat !== 'prog' && x.cat !== 'pow'); }
-    const last = {};
-    for (const [k, v] of Object.entries(S.days)) if (v.d && SC[v.d.id]) { const c = SC[v.d.id].cat; last[c] = Math.max(last[c] ?? -1e9, dayNum(k)); }
-    const cats = [...new Set(av.map(x => x.cat))].sort((a, b) => (last[a] ?? -1e9) - (last[b] ?? -1e9) || seeded(ds + a) - seeded(ds + b));
-    const inCat = av.filter(x => x.cat === cats[0]);
-    s = inCat[Math.floor(seeded(ds + 'x') * inCat.length)];
+    const pend = S.real.filter(r => !r.used);
+    let lastReal = -1e9;
+    for (const [k, v] of Object.entries(S.days)) if (v.d && v.d.src === 'real') lastReal = Math.max(lastReal, dayNum(k));
+    if (pend.length && dayNum(ds) - lastReal >= 4 && pend[0].ds < ds) {
+      const r = pend[0]; r.used = true; rid = r.id; src = 'real'; s = SC[r.sid] || SCEN[0];
+    } else {
+      let av = SCEN.filter(x => x.cat !== 'prog' && x.cat !== 'pow' && !S.dUsed.includes(x.id));
+      if (!av.length) { S.dUsed = S.dUsed.filter(id => SC[id] && (SC[id].cat === 'prog' || SC[id].cat === 'pow')); av = SCEN.filter(x => x.cat !== 'prog' && x.cat !== 'pow'); }
+      const last = {};
+      for (const [k, v] of Object.entries(S.days)) if (v.d && SC[v.d.id]) { const c = SC[v.d.id].cat; last[c] = Math.max(last[c] ?? -1e9, dayNum(k)); }
+      const cats = [...new Set(av.map(x => x.cat))].sort((a, b) => (last[a] ?? -1e9) - (last[b] ?? -1e9) || seeded(ds + a) - seeded(ds + b));
+      s = pickS(av.filter(x => x.cat === cats[0]), ds + 'x');
+    }
   }
-  S.dUsed.push(s.id);
-  day.d = {id: s.id};
+  if (src !== 'real' && !S.dUsed.includes(s.id)) S.dUsed.push(s.id);
+  const lvl = level(), tx = [];
+  if (lvl >= 2) tx.push({t:'esc', i: Math.floor(seeded(ds + 'esc') * ESC.length)});
+  if (lvl >= 3) tx.push({t:'close', i: Math.floor(seeded(ds + 'cl') * CLOSE.length)});
+  day.d = {id: s.id, src, wid, rid, lvl, tx, tans: []};
   save();
   return day.d;
+}
+function scenOf(dd){
+  const s = SC[dd.id];
+  if (dd.src !== 'real') return s;
+  const r = S.real.find(x => x.id === dd.rid) || {};
+  const e = ESC[Math.floor(seeded(dd.rid || 'r') * ESC.length)];
+  return Object.assign({}, s, {s: '🏪 موقف حصلك فعلاً يوم ' + (r.ds || '') + '\nردّك وقتها: «' + (r.mine || '—') + '» — ' + ({won:'قفلت ✅', lost:'خسرته ❌', open:'لسه مفتوح ⏳'}[r.res] || ''), c: r.cust || s.c, f: e.c, fr: e.m, fk: e.k});
+}
+function turnsOf(dd, s){
+  const t = [{c: s.f, m: s.fr, k: s.fk || null, lbl: '↩️ العميل رد عليك'}];
+  (dd.tx || []).forEach(x => {
+    if (x.t === 'esc') t.push(Object.assign({lbl: '🎚️ اعتراض تاني'}, ESC[x.i]));
+    if (x.t === 'close') t.push(Object.assign({lbl: '🤝 اقفل البيعة'}, CLOSE[x.i]));
+  });
+  return t;
 }
 
 // ───── اختيار كويز اليوم ─────
 function pickQuiz(ds){
-  const day = S.days[ds] || (S.days[ds] = {});
+  const day = dayObj(ds);
   if (day.q && day.q.items.every(it => QI[it.id])) return day.q;
   const slots = dayNum(ds) % 2 === 0 ? ['b','p','w'] : ['b','b','p'];
   const items = [], usedC = new Set(), taken = new Set();
@@ -235,7 +293,7 @@ function pickQuiz(ds){
     if (w) {
       taken.add(w.c);
       const sib = QB.filter(x => x.c === w.c && x.t === t && x.id !== w.qid);
-      q = sib.length ? sib[Math.floor(seeded(ds + w.c) * sib.length)] : QI[w.qid];
+      q = sib.length ? pickS(sib, ds + w.c) : QI[w.qid];
       r = 1;
     } else {
       const pend = new Set(S.wrong.map(w => w.c));
@@ -244,7 +302,7 @@ function pickQuiz(ds){
       if (!pool.length) { S.qUsed = S.qUsed.filter(id => QI[id] && QI[id].t !== t); S.cSeen = S.cSeen.filter(c => !QB.some(x => x.c === c && x.t === t)); pool = QB.filter(base); }
       const fresh = pool.filter(x => !S.cSeen.includes(x.c));
       if (fresh.length) pool = fresh;
-      q = pool[Math.floor(seeded(ds + t + i) * pool.length)];
+      q = pickS(pool, ds + t + i);
       S.qUsed.push(q.id);
       if (!S.cSeen.includes(q.c)) S.cSeen.push(q.c);
     }
@@ -257,67 +315,214 @@ function pickQuiz(ds){
 }
 
 // ───── التقييم ─────
-function grade(s, text){
+function grade(keys, text){
   const n = norm(text);
-  return s.k.map(k => {
+  return (keys || []).map(k => {
     const [label, kw, tip] = typeof k === 'string' ? T[k] : k;
     return {label, tip, hit: kw.split('|').some(w => w && n.includes(norm(w)))};
   });
 }
+const chkHtml = g => '<ul class="chk">' + g.map(x => '<li>' + (x.hit ? '✅ ' : '⬜ ') + esc(x.label) + '</li>').join('') + '</ul>';
+
+// ───── الصوت 🎙️ ─────
+const WEB_SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const HAS_MIC = !!((NAT && NAT.startListen) || WEB_SR);
+let mic = {ta: null, btn: null, base: '', on: false, web: null};
+function micStop(){
+  if (!mic.on) return;
+  mic.on = false;
+  try { if (NAT && NAT.stopListen) NAT.stopListen(); else if (mic.web) mic.web.stop(); } catch(e){}
+  if (mic.btn) { mic.btn.classList.remove('rec'); mic.btn.textContent = '🎙️'; }
+}
+function micStart(ta, btn){
+  if (mic.on) { const same = mic.ta === ta; micStop(); if (same) return; }
+  mic = {ta, btn, base: ta.value.trim(), on: true, web: null};
+  btn.classList.add('rec'); btn.textContent = '⏹️';
+  if (ta.id === 'dAns') reactionMark();
+  if (NAT && NAT.startListen) { try { NAT.startListen(); } catch(e){ micStop(); } return; }
+  const r = new WEB_SR(); r.lang = 'ar-SA'; r.continuous = true; r.interimResults = true;
+  r.onresult = e => { let fin = '', tmp = ''; for (let i = e.resultIndex; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) fin += t; else tmp += t; } if (fin) window.onSpeech(fin, true); if (tmp) window.onSpeech(tmp, false); };
+  r.onerror = ev => window.onSpeechEnd(ev.error); r.onend = () => { if (mic.on) micStop(); };
+  mic.web = r; try { r.start(); } catch(e){ micStop(); }
+}
+window.onSpeech = (txt, fin) => {
+  if (!mic.ta) return;
+  if (fin) { mic.base = (mic.base + ' ' + txt).trim(); mic.ta.value = mic.base; }
+  else mic.ta.value = (mic.base + ' ' + txt).trim();
+};
+window.onSpeechEnd = err => {
+  const msg = {denied:'🎙️ لازم توافق على إذن المايك', 'not-allowed':'🎙️ لازم توافق على إذن المايك', nomic:'🎙️ المايك مش متاح', unavailable:'🎙️ التعرف على الصوت مش متاح على الموبايل ده'}[err];
+  if (msg) toast(msg);
+  micStop();
+};
+function inputBlock(id, ph){
+  return '<div class="ta-wrap"><textarea id="' + id + '" placeholder="' + ph + '"></textarea>' + (HAS_MIC ? '<button class="mic" data-mic="' + id + '">🎙️</button>' : '') + '</div>';
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-mic]'); if (b) { e.preventDefault(); micStart($(b.dataset.mic), b); } });
+
+// ───── تايمر رد الفعل ⏱️ ─────
+let rt = {t0: 0, h: null, marked: true};
+function reactionStart(){
+  clearInterval(rt.h); rt = {t0: Date.now(), h: null, marked: false};
+  rt.h = setInterval(() => {
+    const bar = $('rtBar'), msg = $('rtMsg');
+    const left = Math.max(0, 5 - (Date.now() - rt.t0) / 1000);
+    if (bar) { bar.querySelector('i').style.width = (left / 5 * 100) + '%'; bar.classList.toggle('warn', left < 2); }
+    if (left <= 0) { clearInterval(rt.h); if (msg && !rt.marked) msg.textContent = '⏰ العميل بدأ يبص للباب.. ابدأ رد!'; }
+  }, 100);
+}
+function reactionMark(){
+  if (rt.marked || !rt.t0) return;
+  rt.marked = true; clearInterval(rt.h);
+  const sec = Math.round((Date.now() - rt.t0) / 100) / 10;
+  S.rts.push(sec); S.rts = S.rts.slice(-30); save();
+  const msg = $('rtMsg'); if (msg) msg.textContent = (sec <= 5 ? '⚡ بدأت في ' : '🐢 بدأت في ') + sec + ' ثانية';
+}
+document.addEventListener('input', e => { if (e.target.id === 'dAns') reactionMark(); });
 
 // ───── الإحصائيات ─────
-function doneDay(ds){ const d = S.days[ds]; return !!(d && ((d.d && d.d.done) || (d.q && d.q.done))); }
+function doneDay(ds){ const d = S.days[ds]; return !!(d && ((d.d && d.d.done) || (d.q && d.q.done) || (d.w && d.w.done))); }
 function streak(){ let ds = today(), n = 0; if (!doneDay(ds)) ds = addDays(ds, -1); while (doneDay(ds)) { n++; ds = addDays(ds, -1); } return n; }
+function metSum(from, n){ let v = 0, c = 0, a = 0, s = 0; for (let i = 0; i < n; i++) { const m = S.met[addDays(from, -i)]; if (m) { v += +m.v || 0; c += +m.c || 0; a += +m.a || 0; s += +m.s || 0; } } return {v, c, a, s}; }
+const pct = (x, y) => y ? Math.round(x / y * 100) : null;
 function renderStats(){
   $('stStreak').textContent = streak();
   $('stAcc').textContent = S.qt ? Math.round(S.qr / S.qt * 100) + '%' : '—';
-  $('stWrong').textContent = S.wrong.length;
+  $('stLvl').textContent = level();
+  const w = metSum(today(), 7), cv = pct(w.c, w.v);
+  $('stConv').textContent = cv == null ? '—' : cv + '%';
   const d = S.days[today()] || {};
-  $('tDrill').innerHTML = d.d && d.d.done ? '<span class="ok">✔ خلص</span>' : 'موقف بيع';
+  $('tDrill').innerHTML = d.d && d.d.done ? '<span class="ok">✔ خلص ' + P(Math.round((d.d.score || 0) * 100)) + '</span>' : 'موقف بيع • مستوى ' + level();
   $('tQuiz').innerHTML = d.q && d.q.done ? '<span class="ok">✔ ' + d.q.items.filter(it => it.a === QI[it.id].a).length + ' من 3</span>' : '3 أسئلة';
-  $('tSet').textContent = '🎯 ' + S.set.d + ' • 🧠 ' + S.set.q;
+  $('tWarm').innerHTML = d.w && d.w.done ? '<span class="ok">✔ ' + d.w.res.filter(Boolean).length + ' من 10 في الوقت</span>' : 'قبل الشيفت • دقيقتين';
+  $('tShift').innerHTML = S.met[today()] ? '<span class="ok">✔ الأرقام اتسجلت</span>' : 'أرقامي + موقف حقيقي';
+  const pend = S.wrong.length + S.dWeak.length;
+  $('tRev').textContent = pend ? '🔁 ' + pend + ' هيرجعولك' : 'الغلط + آخر أيام';
+  renderPlan();
 }
 
-// ───── رسم التمرين ─────
+// ───── خطة «لو… هقول…» 📌 ─────
+function pickPlan(ds){
+  const day = dayObj(ds);
+  if (day.plan && SC[day.plan.sid]) return day.plan;
+  const s = pickS(SCEN.filter(s => s.cat !== 'pow'), ds + 'plan');
+  const sug = s.m.split(/(?<=[.؟?!])\s/).slice(0, 2).join(' ').slice(0, 160);
+  day.plan = {sid: s.id, txt: sug, set: false};
+  save();
+  return day.plan;
+}
+function planLine(p){ return 'لو العميل قال «' + SC[p.sid].c + '» ← هقول «' + p.txt + '»'; }
+function renderPlan(){
+  const box = $('planCard');
+  if (box.contains(document.activeElement) || (mic.on && mic.ta && mic.ta.id === 'pTxt')) return;
+  const p = pickPlan(today()), s = SC[p.sid];
+  if (p.set) {
+    box.innerHTML = '<div class="mut">📌 خطة النهارده — خليها في دماغك طول الشيفت</div><div class="pl">لو العميل قال <em>«' + esc(s.c) + '»</em><br>← هقول <em>«' + esc(p.txt) + '»</em></div><button class="btn sec" id="pEdit" style="padding:6px;font-size:13px">✏️ عدّل</button>';
+    $('pEdit').onclick = () => { p.set = false; save(); renderPlan(); };
+  } else {
+    box.innerHTML = '<div class="mut">📌 خطة «لو… هقول…» — قرّر ردك قبل ما الموقف يحصل</div><div class="pl">لو العميل قال <em>«' + esc(s.c) + '»</em></div>' + inputBlock('pTxt', 'هقول...') + '<button class="btn" id="pSet">📌 ثبّت الخطة</button>';
+    $('pTxt').value = p.txt;
+    $('pSet').onclick = () => { const v = $('pTxt').value.trim(); if (v.length < 5) return toast('✍️ اكتب ردك'); micStop(); p.txt = v; p.set = true; save(); syncPlan(); $('pSet').blur(); renderPlan(); toast('📌 اتثبتت'); };
+  }
+}
+function syncPlan(){ try { const p = S.days[today()] && S.days[today()].plan; if (NAT && NAT.setPlan && p && p.set) NAT.setPlan(planLine(p)); } catch(e){} }
+
+// ───── رسم التمرين 🎯 ─────
 let curDs;
 function renderDrill(){
   const ds = curDs = today();
-  const dd = pickDrill(ds), s = SC[dd.id];
-  $('dCat').textContent = CATS[s.cat];
-  $('dSit').textContent = s.s;
-  $('dCust').textContent = s.c;
-  $('dF').textContent = s.f;
-  if (dd.ans != null) showDrillRes(s, dd); else { $('dStep1').classList.remove('hide'); $('dRes').classList.add('hide'); $('dAns').value = ''; }
+  const dd = pickDrill(ds), s = scenOf(dd), box = $('drillBox');
+  let h = '<div class="chips"><span class="chip">' + CATS[s.cat] + '</span>' + (dd.src === 'weak' ? '<span class="chip hot">🔁 رجعلك بعميل تاني</span>' : '') + (dd.src === 'real' ? '<span class="chip hot">🏪 موقفك الحقيقي</span>' : '') + '<span class="chip">🎚️ مستوى ' + dd.lvl + '</span></div>';
+  h += '<div class="sit">' + esc(s.s) + '</div>';
+  if (!dd.started) {
+    h += '<p class="mut">⏱️ أول ما تدوس، العميل هيتكلم وعندك 5 ثواني تبدأ ترد — زي المحل بالظبط.</p><button class="btn" id="dStart">▶️ ابدأ الموقف</button>';
+    box.innerHTML = h;
+    $('dStart').onclick = () => { dd.started = true; save(); renderDrill(); reactionStart(); };
+    return;
+  }
+  h += '<div class="bub">' + esc(s.c) + '</div>';
+  if (dd.ans == null) {
+    h += '<div class="bar' + (rt.marked ? ' hide' : '') + '" id="rtBar"><i></i></div><div class="tmsg" id="rtMsg"></div>' + inputBlock('dAns', 'رد على العميل — اكتب أو دوس 🎙️ واتكلم') + '<button class="btn" id="dGo">✍️ شوف التقييم</button>';
+    box.innerHTML = h;
+    $('dGo').onclick = () => {
+      const v = $('dAns').value.trim(); if (v.length < 10) return toast('✍️ اكتب ردك كامل الأول');
+      micStop(); reactionMark();
+      dd.ans = v; const g = grade(s.k, v); dd.score = g.filter(x => x.hit).length / g.length;
+      weakUpdate(dd, s); save(); renderDrill();
+    };
+    return;
+  }
+  const g = grade(s.k, dd.ans), miss = g.find(x => !x.hit);
+  h += '<div class="box"><h3>📝 ردك — ' + P(Math.round(dd.score * 100)) + '</h3>' + esc(dd.ans) + chkHtml(g) + '</div>';
+  h += '<div class="box best"><h3>✅ ' + (dd.src === 'real' ? 'رد نموذجي لموقف شبهه' : 'الرد الأحسن') + '</h3>' + esc(s.m) + '</div>';
+  h += '<div class="box fix"><h3>🔧 حاجة واحدة تتظبط</h3>' + (miss ? esc(miss.tip) : '✨ غطّيت النقط الأساسية! لمسة زيادة: ' + esc(s.p)) + '</div>';
+  h += '<div class="box rule"><h3>🧠 القاعدة</h3>' + esc(s.r) + '</div>';
+  if (dd.score < 0.5 && dd.src !== 'real') h += '<p class="mut">🔁 الموقف ده هيرجعلك بعميل تاني بعد 4 أيام</p>';
+  const turns = turnsOf(dd, s);
+  let allDone = true;
+  for (let i = 0; i < turns.length; i++) {
+    const t = turns[i];
+    h += '<h2 style="margin-top:16px">' + t.lbl + '</h2><div class="bub">' + esc(t.c) + '</div>';
+    if (dd.tans[i] == null) { h += inputBlock('tAns', 'رد عليه...') + '<button class="btn" id="tGo" data-i="' + i + '">👀 شوف الرد النموذجي</button>'; allDone = false; break; }
+    const tg = t.k ? grade(t.k, dd.tans[i]) : null;
+    h += '<div class="box"><h3>📝 ردك</h3>' + esc(dd.tans[i]) + (tg ? chkHtml(tg) : '') + '</div><div class="box best"><h3>✅ الرد النموذجي</h3>' + esc(t.m) + '</div>';
+  }
+  if (allDone) h += '<div class="score">🔥 تمرين النهارده خلص</div>';
+  box.innerHTML = h;
+  const tg = $('tGo');
+  if (tg) tg.onclick = () => {
+    const v = $('tAns').value.trim(); if (v.length < 3) return toast('✍️ اكتب ردك الأول');
+    micStop(); dd.tans[+tg.dataset.i] = v;
+    if (turns.every((_, k) => dd.tans[k] != null)) dd.done = true;
+    save(); renderDrill(); renderStats();
+  };
 }
-function showDrillRes(s, dd){
-  $('dStep1').classList.add('hide'); $('dRes').classList.remove('hide');
-  const g = grade(s, dd.ans);
-  $('dMine').innerHTML = esc(dd.ans);
-  $('dChk').innerHTML = g.map(x => '<li>' + (x.hit ? '✅ ' : '⬜ ') + esc(x.label) + '</li>').join('');
-  $('dBest').innerHTML = esc(s.m);
-  const miss = g.find(x => !x.hit);
-  $('dFix').innerHTML = miss ? esc(miss.tip) : '✨ غطّيت النقط الأساسية! لمسة زيادة: ' + esc(s.p);
-  $('dRule').innerHTML = esc(s.r);
-  if (dd.fans != null) {
-    $('dStep2').classList.add('hide'); $('dFRes').classList.remove('hide');
-    $('dFMine').innerHTML = esc(dd.fans); $('dFR').innerHTML = esc(s.fr);
-  } else { $('dStep2').classList.remove('hide'); $('dFRes').classList.add('hide'); $('dFAns').value = ''; }
+function weakUpdate(dd, s){
+  if (dd.src === 'real') return;
+  const ds = curDs;
+  if (dd.src === 'weak') {
+    const i = S.dWeak.findIndex(w => w.id === dd.wid);
+    if (i >= 0) { if (dd.score >= 0.5) S.dWeak.splice(i, 1); else S.dWeak[i] = {id: s.id, cat: s.cat, due: addDays(ds, 4)}; }
+  } else if (dd.score < 0.5 && !S.dWeak.some(w => w.id === s.id)) S.dWeak.push({id: s.id, cat: s.cat, due: addDays(ds, 4)});
 }
-$('dGo').onclick = () => {
-  const v = $('dAns').value.trim();
-  if (v.length < 10) return toast('✍️ اكتب ردك كامل الأول');
-  const dd = S.days[curDs].d; dd.ans = v; save();
-  showDrillRes(SC[dd.id], dd);
-};
-$('dFGo').onclick = () => {
-  const v = $('dFAns').value.trim();
-  if (v.length < 3) return toast('✍️ اكتب ردك الأول');
-  const dd = S.days[curDs].d; dd.fans = v; dd.done = true; save();
-  showDrillRes(SC[dd.id], dd); renderStats();
-  $('dFRes').scrollIntoView({behavior:'smooth', block:'center'});
-};
 
-// ───── رسم الكويز ─────
+// ───── جولة السرعة ⚡ ─────
+let wt = {h: null};
+function pickWarm(ds){
+  const day = dayObj(ds);
+  if (day.w && day.w.ids.every(id => SC[id])) return day.w;
+  const cats = Object.keys(CATS).sort((a, b) => seeded(ds + 'w' + a) - seeded(ds + 'w' + b)).slice(0, 10);
+  day.w = {ids: cats.map(c => pickS(SCEN.filter(s => s.cat === c), ds + 'wc' + c).id), res: []};
+  save();
+  return day.w;
+}
+function renderWarm(){
+  clearInterval(wt.h);
+  const ds = curDs = today(), w = pickWarm(ds), box = $('warmBox'), i = w.res.length;
+  const p = S.days[ds].plan;
+  const h = p && p.set ? '<div class="plan" style="margin-bottom:10px"><div class="mut">📌 خطتك النهارده</div><div class="pl">' + esc(planLine(p)) + '</div></div>' : '';
+  if (i >= w.ids.length) {
+    const fast = w.res.filter(Boolean).length;
+    if (!w.done) { w.done = true; save(); renderStats(); }
+    box.innerHTML = h + '<div class="wcard"><div class="big">' + fast + ' / 10</div><div>' + (fast >= 8 ? '🔥 ردودك بقت تلقائية' : fast >= 5 ? '👏 قربت.. كرر بكرة' : '💪 الجولة دي اللي بتبني رد الفعل') + '</div></div><button class="btn sec" id="wAgain">🔁 جولة تانية للتمرين</button>';
+    $('wAgain').onclick = () => { w.ids = SCEN.slice().sort(() => Math.random() - .5).slice(0, 10).map(s => s.id); w.res = []; w.rev = null; save(); renderWarm(); };
+    return;
+  }
+  const s = SC[w.ids[i]];
+  if (w.rev === i) {
+    box.innerHTML = h + '<div class="wcard"><div class="mut">' + (i + 1) + ' من 10 • ' + CATS[s.cat] + (w.inTime ? ' • ⚡ في الوقت' : ' • ⏰ الوقت خلص') + '</div><div class="bub">' + esc(s.c) + '</div><div class="box rule"><h3>أول خطوة</h3>' + esc(s.r) + '</div></div><div class="two"><button class="btn" id="wOk">✅ قلتها صح</button><button class="btn sec" id="wNo">❌ لأ</button></div>';
+    const fin = v => { w.res[i] = !!(v && w.inTime); w.rev = null; save(); renderWarm(); };
+    $('wOk').onclick = () => fin(true); $('wNo').onclick = () => fin(false);
+    return;
+  }
+  box.innerHTML = h + '<div class="wcard"><div class="mut">' + (i + 1) + ' من 10 • قول أول خطوة بصوت عالي</div><div class="bub">' + esc(s.c) + '</div><div class="bar" id="wBar"><i></i></div></div><button class="btn" id="wSaid">🗣️ قلتها!</button>';
+  const t0 = Date.now();
+  const reveal = inTime => { clearInterval(wt.h); w.inTime = inTime; w.rev = i; save(); renderWarm(); };
+  wt.h = setInterval(() => { const b = $('wBar'); if (!b) return clearInterval(wt.h); const left = Math.max(0, 5 - (Date.now() - t0) / 1000); b.querySelector('i').style.width = left / 5 * 100 + '%'; b.classList.toggle('warn', left < 2); if (left <= 0) reveal(false); }, 100);
+  $('wSaid').onclick = () => reveal(true);
+}
+
+// ───── رسم الكويز 🧠 ─────
 function order(qid, ds){ const o = [0,1,2,3]; for (let i = 3; i > 0; i--) { const j = Math.floor(seeded(qid + ds + i) * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; } return o; }
 function renderQuiz(){
   const ds = curDs = today();
@@ -349,38 +554,111 @@ $('qList').addEventListener('click', e => {
   save(); renderQuiz(); renderStats();
 });
 
-// ───── المراجعة ─────
-function renderReview(){
-  $('rWrong').innerHTML = S.wrong.length ? S.wrong.slice().sort((a, b) => a.due < b.due ? -1 : 1).map(w => {
-    const q = QI[w.qid]; return '<div>' + TYPE[w.t] + ' — ' + esc(q ? q.q : w.c) + '<br><span class="mut">📅 يرجع: ' + w.due + '</span></div>';
-  }).join('') : '<div class="mut">🎉 مفيش غلط مستني — كمل كده</div>';
-  const rows = [];
-  for (let i = 0; i < 14; i++) {
-    const ds = addDays(today(), -i), d = S.days[ds]; if (!d) continue;
-    const dc = d.d && SC[d.d.id] ? CATS[SC[d.d.id].cat] + (d.d.done ? ' ✔' : ' …') : '—';
-    const qs = d.q ? (d.q.done ? '🧠 ' + d.q.items.filter(it => it.a === QI[it.id].a).length + ' من 3' : '🧠 …') : '';
-    rows.push('<div><b>' + ds + '</b><br>' + esc(dc) + ' &nbsp; ' + qs + '</div>');
+// ───── آخر الشيفت: أرقامي 📈 ─────
+const MF = [['v','👥 عملاء دخلوا'],['c','✅ قفلت'],['a','➕ إضافات اتباعت'],['s','💰 المبيعات (ريال)']];
+function renderMet(){
+  const ds = today(), m = S.met[ds] || {v:0, c:0, a:0, s:0};
+  let h = '<div class="cells">' + MF.map(([k, l]) => '<div class="cell"><label>' + l + '</label><div class="step">' + (k === 's' ? '' : '<button data-st="' + k + '" data-d="-1">−</button>') + '<input type="number" inputmode="numeric" min="0" id="m_' + k + '" value="' + (m[k] || 0) + '">' + (k === 's' ? '' : '<button data-st="' + k + '" data-d="1">+</button>') + '</div></div>').join('') + '</div><button class="btn" id="mSave">💾 احفظ أرقام النهارده</button>';
+  const a = metSum(ds, 7), b = metSum(addDays(ds, -7), 7);
+  const kp = (x, y, suf) => x == null ? '—' : x + suf + (y == null ? '' : ' <small class="' + (x >= y ? 'up' : 'dn') + '">' + (x >= y ? '▲' : '▼') + '</small>');
+  const cA = pct(a.c, a.v), cB = pct(b.c, b.v), tA = a.c ? Math.round(a.s / a.c) : null, tB = b.c ? Math.round(b.s / b.c) : null, aA = a.c ? Math.round(a.a / a.c * 100) : null, aB = b.c ? Math.round(b.a / b.c * 100) : null;
+  h += '<div class="mut" style="margin-top:12px">آخر 7 أيام مقارنة باللي قبلهم</div><div class="kpi"><div><b>' + kp(cA, cB, '%') + '</b><span>نسبة التقفيل</span></div><div><b>' + kp(tA, tB, '') + '</b><span>متوسط الفاتورة</span></div><div><b>' + kp(aA, aB, '%') + '</b><span>إضافات لكل بيعة</span></div></div>';
+  h += chart(ds);
+  $('metBox').innerHTML = h;
+  $('metBox').querySelectorAll('[data-st]').forEach(bt => bt.onclick = () => { const inp = $('m_' + bt.dataset.st); inp.value = Math.max(0, (+inp.value || 0) + +bt.dataset.d); });
+  $('mSave').onclick = () => {
+    const o = {}; MF.forEach(([k]) => o[k] = Math.max(0, +$('m_' + k).value || 0));
+    if (o.c > o.v) return toast('⚠️ التقفيلات أكتر من العملاء');
+    S.met[ds] = o; save(); renderMet(); renderStats(); toast('✅ اتسجلت');
+  };
+}
+function chart(ds){
+  const W = 330, n = 14, bw = W / n;
+  let g = '', any = false;
+  for (let i = 0; i < n; i++) {
+    const d = addDays(ds, -i), m = S.met[d], c = m && m.v ? m.c / m.v : null, x = i * bw;   // النهارده على اليمين
+    if (c != null) { any = true; const hh = Math.max(2, c * 80); g += '<rect x="' + (W - x - bw + 4) + '" y="' + (98 - hh) + '" width="' + (bw - 8) + '" height="' + hh + '" rx="3" fill="#a3e635"/><text x="' + (W - x - bw / 2) + '" y="' + (94 - hh) + '" font-size="9" fill="#e8f5e0" text-anchor="middle">' + Math.round(c * 100) + '</text>'; }
+    if (doneDay(d)) g += '<text x="' + (W - x - bw / 2) + '" y="114" font-size="10" text-anchor="middle">🔥</text>';
+    g += '<text x="' + (W - x - bw / 2) + '" y="127" font-size="8" fill="#8fa894" text-anchor="middle">' + d.slice(8) + '</text>';
   }
-  $('rHist').innerHTML = rows.join('') || '<div class="mut">لسه مفيش سجل</div>';
-  const cnt = t => QB.filter(q => q.t === t).length;
-  $('rBank').innerHTML = 'مواقف: ' + SCEN.length + ' (بروقرسف ' + SCEN.filter(s => s.cat === 'prog').length + ' • قياسات ' + SCEN.filter(s => s.cat === 'pow').length + ')<br>أسئلة: ' + QB.length + ' (Brillmann ' + cnt('b') + ' • بروقرسف ' + cnt('p') + ' • قياسات ' + cnt('w') + ')<br>اتعمل من المواقف: ' + S.dUsed.length + ' • من الأسئلة: ' + S.qUsed.length;
+  return '<div class="mut" style="margin-top:12px">📊 نسبة التقفيل آخر 14 يوم — 🔥 = يوم اتمرنت فيه</div><svg viewBox="0 0 ' + W + ' 130" style="width:100%">' + g + '</svg>' + (any ? '' : '<div class="mut">سجّل أرقامك كل يوم عشان تشوف التمرين بيرفعها ولا لأ</div>');
 }
 
-// ───── الإعدادات والإشعارات ─────
-function nativeSync(){ if (NAT && NAT.schedule) try { NAT.schedule(S.set.d, S.set.q); } catch(e){} }
+// ───── آخر الشيفت: موقف حقيقي 🏪 ─────
+function classify(text){
+  const n = norm(text), words = n.split(/\s+/).filter(w => w.length > 2);
+  let best = SCEN[0], bs = -1;
+  SCEN.forEach(s => {
+    const kw = (CLS[s.cat] || '').split('|').filter(k => k && n.includes(norm(k))).length * 3;
+    const cn = norm(s.c), ov = words.filter(w => cn.includes(w)).length;
+    if (kw + ov > bs) { bs = kw + ov; best = s; }
+  });
+  return best;
+}
+function renderReal(){
+  let h = '<div class="mut">اكتب اللي حصل بجد — التطبيق يقيّمه، ويرجّعهولك تمرين بعد كام يوم.</div>';
+  h += '<p style="margin:8px 0 4px">🗣️ العميل قال إيه؟</p>' + inputBlock('rCust', 'مثلاً: غالية مرة، المحل اللي جنبكم أرخص');
+  h += '<p style="margin:8px 0 4px">📝 انت رديت بإيه؟</p>' + inputBlock('rMine', 'اللي قلته بالظبط على قد ما تفتكر');
+  h += '<div class="row"><span>النتيجة</span><select id="rRes"><option value="won">✅ قفلت</option><option value="lost">❌ خسرته</option><option value="open">⏳ لسه مفتوح</option></select></div>';
+  h += '<button class="btn" id="rGo">🔍 قيّم ردي</button><div id="rOut"></div>';
+  if (S.real.length) h += '<h2 style="margin-top:14px">📥 مواقفك الحقيقية (' + S.real.length + ')</h2><div class="hist">' + S.real.slice().reverse().slice(0, 10).map(r => '<div>' + r.ds + ' • ' + (SC[r.sid] ? CATS[SC[r.sid].cat] : '') + ' • ' + ({won:'✅', lost:'❌', open:'⏳'}[r.res] || '') + '<br>«' + esc(r.cust) + '» <span class="mut">' + (r.used ? '✔ اتمرنت عليه' : '⏳ هيرجعلك') + '</span></div>').join('') + '</div>';
+  $('realBox').innerHTML = h;
+  $('rGo').onclick = () => {
+    const cust = $('rCust').value.trim(), mine = $('rMine').value.trim(), res = $('rRes').value;
+    if (cust.length < 4 || mine.length < 4) return toast('✍️ اكتب كلام العميل وردك');
+    micStop();
+    const s = classify(cust), g = grade(s.k, mine), miss = g.find(x => !x.hit);
+    S.real.push({id: Date.now().toString(36), ds: today(), cust, mine, res, sid: s.id, used: false}); save();
+    renderReal();
+    $('rOut').innerHTML = '<div class="chips"><span class="chip">' + CATS[s.cat] + '</span></div><div class="box"><h3>📝 ردك — ' + P(Math.round(g.filter(x => x.hit).length / g.length * 100)) + '</h3>' + chkHtml(g) + '</div><div class="box fix"><h3>🔧 حاجة واحدة تتظبط</h3>' + (miss ? esc(miss.tip) : '✨ غطّيت النقط الأساسية') + '</div><div class="box rule"><h3>🧠 القاعدة</h3>' + esc(s.r) + '</div><div class="box best"><h3>✅ رد نموذجي لموقف شبهه</h3>' + esc(s.m) + '</div><p class="mut">📥 اتحفظ — هيرجعلك تمرين بعد كام يوم</p>';
+    $('rOut').scrollIntoView({behavior:'smooth', block:'start'});
+  };
+}
+document.querySelectorAll('.acc>button').forEach(b => b.onclick = () => { const a = b.parentElement; micStop(); a.classList.toggle('open'); if (a.classList.contains('open')) (a.id === 'accMet' ? renderMet : renderReal)(); });
+
+// ───── المراجعة 📊 ─────
+function renderReview(){
+  const rows = [];
+  S.wrong.slice().sort((a, b) => a.due < b.due ? -1 : 1).forEach(w => { const q = QI[w.qid]; rows.push('<div>🧠 ' + TYPE[w.t] + ' — ' + esc(q ? q.q : w.c) + '<br><span class="mut">📅 يرجع بصيغة تانية: ' + w.due + '</span></div>'); });
+  S.dWeak.forEach(w => rows.push('<div>🎯 ' + CATS[w.cat] + ' — «' + esc(SC[w.id] ? SC[w.id].c : '') + '»<br><span class="mut">📅 يرجع بعميل تاني: ' + w.due + '</span></div>'));
+  $('rWrong').innerHTML = rows.join('') || '<div class="mut">🎉 مفيش حاجة مستنية — كمل كده</div>';
+  const hr = [];
+  for (let i = 0; i < 14; i++) {
+    const ds = addDays(today(), -i), d = S.days[ds]; if (!d || !(d.d || d.q || d.w)) continue;
+    const dc = d.d && SC[d.d.id] ? CATS[SC[d.d.id].cat] + (d.d.done ? ' ✔ ' : ' …') : '';
+    const qs = d.q ? (d.q.done ? '🧠 ' + d.q.items.filter(it => it.a === QI[it.id].a).length + ' من 3' : '🧠 …') : '';
+    const ws = d.w && d.w.done ? '⚡ ' + d.w.res.filter(Boolean).length + ' من 10' : '';
+    hr.push('<div><b>' + ds + '</b><br>' + esc(dc) + (d.d && d.d.done ? P(Math.round((d.d.score || 0) * 100)) : '') + ' &nbsp; ' + qs + ' &nbsp; ' + ws + '</div>');
+  }
+  $('rHist').innerHTML = hr.join('') || '<div class="mut">لسه مفيش سجل</div>';
+  const cnt = t => QB.filter(q => q.t === t).length;
+  const avgRt = S.rts.length ? Math.round(S.rts.reduce((a, b) => a + b, 0) / S.rts.length * 10) / 10 : null;
+  $('rBank').innerHTML = '⏱️ متوسط بدايتك للرد: ' + (avgRt == null ? '—' : avgRt + ' ثانية') + '<br>🎚️ المستوى: ' + level() + (S.set.lvl === 'auto' ? ' (تلقائي)' : '') + '<br>🏪 مواقف حقيقية متسجلة: ' + S.real.length + '<br>📚 البنك: ' + SCEN.length + ' موقف • ' + QB.length + ' سؤال (Brillmann ' + cnt('b') + ' • بروقرسف ' + cnt('p') + ' • قياسات ' + cnt('w') + ')';
+}
+
+// ───── الإعدادات والإشعارات ⚙️ ─────
+function nativeSync(){
+  if (!NAT) return;
+  try {
+    if (NAT.scheduleJson) NAT.scheduleJson(JSON.stringify({drill: S.set.d, quiz: S.set.q, warm: S.set.w, warm_fri: S.set.wf, log: S.set.l}));
+    else if (NAT.schedule) NAT.schedule(S.set.d, S.set.q);
+  } catch(e){}
+  syncPlan();
+}
 function renderSettings(){
-  $('sD').value = S.set.d; $('sQ').value = S.set.q;
+  $('sD').value = S.set.d; $('sQ').value = S.set.q; $('sW').value = S.set.w; $('sWF').value = S.set.wf; $('sL').value = S.set.l; $('sLvl').value = S.set.lvl;
   $('sVer').textContent = 'الإصدار ' + APP_V + (NAT ? ' • APK' : ' • متصفح');
   if (!NAT) { $('natBox').classList.add('hide'); $('noNat').classList.remove('hide'); return; }
+  $('oldApk').classList.toggle('hide', !!NAT.scheduleJson);
   let p = '—'; try { p = NAT.notifStatus(); } catch(e){}
   $('sPerm').textContent = p === 'granted' ? '✅ مسموح' : '❌ مقفول';
   $('sPerm').style.color = p === 'granted' ? 'var(--grn)' : 'var(--red)';
 }
 $('sSave').onclick = () => {
-  const d = $('sD').value, q = $('sQ').value;
-  if (!d || !q) return toast('⏰ اختار الميعادين');
-  S.set = {d, q}; save(); nativeSync(); renderStats();
-  toast(NAT ? '✅ اتظبطت: 🎯 ' + d + ' • 🧠 ' + q : '✅ اتحفظت (الإشعار من الـ APK)');
+  const v = {d: $('sD').value, q: $('sQ').value, w: $('sW').value, wf: $('sWF').value, l: $('sL').value};
+  if (Object.values(v).some(x => !x)) return toast('⏰ اختار كل المواعيد');
+  S.set = Object.assign(S.set, v, {lvl: $('sLvl').value}); save(); nativeSync(); renderStats();
+  toast(NAT ? '✅ اتظبطت المواعيد' : '✅ اتحفظت (الإشعار من الـ APK)');
 };
 $('sAsk').onclick = () => { try { NAT.askPerm(); } catch(e){} setTimeout(renderSettings, 1500); };
 $('sTest').onclick = () => { try { NAT.test(); toast('🔔 اتبعت إشعار تجربة'); } catch(e){} };
@@ -394,32 +672,30 @@ window.onPermResult = () => renderSettings();
 
 // ───── التنقل بين الأقسام ─────
 let open = null;
+const SECS = ['drill','quiz','warm','shift','review','settings'];
+const RENDER = {drill: renderDrill, quiz: renderQuiz, warm: renderWarm, review: renderReview, settings: renderSettings,
+  shift: () => { const a = $('accMet'), b = $('accReal'); a.classList.toggle('open', !S.met[today()]); b.classList.remove('open'); if (!S.met[today()]) renderMet(); }};
 function showSec(name, scroll = true){
+  micStop(); clearInterval(wt.h);
   document.querySelectorAll('.cur').forEach(c => c.classList.remove('open'));
   document.querySelectorAll('.tile').forEach(t => t.classList.toggle('on', t.dataset.sec === name && open !== name));
   if (open === name) { open = null; return; }
   open = name;
-  if (name === 'drill') renderDrill();
-  if (name === 'quiz') renderQuiz();
-  if (name === 'review') renderReview();
-  if (name === 'settings') renderSettings();
+  RENDER[name]();
   $('sec-' + name).classList.add('open');
   if (scroll) setTimeout(() => $('sec-' + name).scrollIntoView({behavior:'smooth', block:'start'}), 30);
 }
-window.openSec = n => { open = null; showSec(n); };
-window.onBack = () => { if (open) { document.querySelectorAll('.cur').forEach(c => c.classList.remove('open')); document.querySelectorAll('.tile').forEach(t => t.classList.remove('on')); open = null; window.scrollTo({top:0}); return true; } return false; };
+window.openSec = n => { open = null; if (SECS.includes(n)) showSec(n); };
+window.onBack = () => { micStop(); if (open) { document.querySelectorAll('.cur').forEach(c => c.classList.remove('open')); document.querySelectorAll('.tile').forEach(t => t.classList.remove('on')); open = null; window.scrollTo({top:0}); return true; } return false; };
 document.querySelectorAll('.tile').forEach(t => t.onclick = () => showSec(t.dataset.sec));
 
 function toast(m){ const t = $('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(() => t.style.display = 'none', 2500); }
 function renderAll(){ renderStats(); if (open) { const o = open; open = null; showSec(o, false); } }
 
-// ───── التحديث ─────
+// ───── التحديث ⟳ ─────
 let remote = null;
 async function checkUpd(){
-  try {
-    const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'}); remote = await r.json();
-    $('badge').style.display = remote.v > APP_V ? 'flex' : 'none';
-  } catch(e){}
+  try { const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'}); remote = await r.json(); $('badge').style.display = remote.v > APP_V ? 'flex' : 'none'; } catch(e){}
 }
 $('updBtn').onclick = async () => {
   await checkUpd();
@@ -434,7 +710,7 @@ $('updBtn').onclick = async () => {
 (function afterUpdate(){
   const lv = +localStorage.getItem('sd_v') || 0;
   if (lv && lv < APP_V) fetch('version.json', {cache:'no-store'}).then(r => r.json()).then(v => {
-    const c = $('updCard'); c.innerHTML = '<b>✅ اتحدّث</b><ul>' + (v.notes || []).map(n => '<li>' + esc(n) + '</li>').join('') + '</ul><button class="btn sec" id="uOk">تمام</button>'; c.classList.remove('hide'); $('uOk').onclick = () => c.classList.add('hide');
+    const c = $('updCard'); c.innerHTML = '<b>✅ اتحدّث</b><ul>' + (v.notes || []).map(n => '<li>' + esc(n) + '</li>').join('') + '</ul>' + (NAT && !NAT.scheduleJson ? '<p class="mut">📲 نزّل الـ APK الجديد عشان المايك والإشعارات الجديدة</p>' : '') + '<button class="btn sec" id="uOk">تمام</button>'; c.classList.remove('hide'); $('uOk').onclick = () => c.classList.add('hide');
   }).catch(() => {});
   localStorage.setItem('sd_v', APP_V);
 })();
@@ -442,10 +718,10 @@ $('updBtn').onclick = async () => {
 // ───── البداية ─────
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 renderStats(); nativeSync(); checkUpd();
-const h = location.hash.replace('#', '');
-if (['drill','quiz','review','settings'].includes(h)) showSec(h);
-window.addEventListener('hashchange', () => { const h = location.hash.replace('#', ''); if (h) window.openSec(h); });
-document.addEventListener('visibilitychange', () => { if (!document.hidden) { if (curDs && curDs !== today()) renderAll(); else renderStats(); } });
+const h0 = location.hash.replace('#', '');
+if (SECS.includes(h0)) showSec(h0);
+window.addEventListener('hashchange', () => window.openSec(location.hash.replace('#', '')));
+document.addEventListener('visibilitychange', () => { if (document.hidden) micStop(); else if (curDs && curDs !== today()) renderAll(); else renderStats(); });
 </script>
 </body>
 </html>
