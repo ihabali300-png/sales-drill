@@ -93,6 +93,27 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
 .wcard{background:var(--card2);border-radius:14px;padding:14px;text-align:center}
 .wcard .bub,.wcard .box{text-align:right}
 .big{font-size:44px;font-weight:800;color:var(--lime)}
+.tile.wide{grid-column:1/-1;display:flex;align-items:center;gap:12px;text-align:right;padding:14px}
+.tile.wide .e{font-size:36px}
+.lvl{border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--card2)}
+.lvl>button{width:100%;background:transparent;border:0;color:var(--txt);font:inherit;text-align:right;padding:12px;display:flex;gap:10px;align-items:center}
+.lvl>button .le{font-size:30px}
+.lvl>button b{display:block;font-size:16px}
+.lvl>button small{color:var(--mut);font-size:12px;display:block}
+.lvl.lock{opacity:.55}
+.lvl .body{display:none;padding:0 12px 12px}
+.lvl.open .body{display:block}
+.les{display:flex;gap:10px;align-items:center;width:100%;background:#0e1a11;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:6px;color:var(--txt);font:inherit;text-align:right}
+.les .st2{margin-inline-start:auto;font-size:13px;color:var(--mut)}
+.les[disabled]{opacity:.45}
+.mapc{border-radius:12px;padding:10px 12px;margin-top:10px;background:var(--card2);border-right:4px solid var(--c,#a3e635)}
+.mapc h3{margin:0 0 6px;font-size:15px}
+.mapc ul{margin:0;padding-inline-start:18px}
+.mapc li{margin:3px 0}
+.box.sci{border-color:#3b82f6;background:#101c2c}.box.sci h3{color:#93c5fd}
+.box.task{border-color:#a855f7;background:#1d1328}.box.task h3{color:#d8b4fe}
+.pbar{height:6px;background:#0e1a11;border-radius:99px;overflow:hidden;margin-top:6px}
+.pbar i{display:block;height:100%;background:var(--lime)}
 </style>
 </head>
 <body>
@@ -112,6 +133,7 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
   </div>
 
   <div class="tiles">
+    <button class="tile wide" data-sec="learn"><span class="e">📚</span><span><b>المنهج — من الصفر للاحتراف</b><small id="tLearn">درس النهارده</small></span></button>
     <button class="tile" data-sec="drill"><span class="e">🎯</span>تمرين النهارده<small id="tDrill">موقف بيع</small></button>
     <button class="tile" data-sec="quiz"><span class="e">🧠</span>كويز النهارده<small id="tQuiz">3 أسئلة</small></button>
     <button class="tile" data-sec="warm"><span class="e">⚡</span>جولة سرعة<small id="tWarm">قبل الشيفت • دقيقتين</small></button>
@@ -120,6 +142,7 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
     <button class="tile" data-sec="settings"><span class="e">⚙️</span>الإعدادات<small>المواعيد والمستوى</small></button>
   </div>
 
+  <section class="cur" id="sec-learn"><div id="learnBox"></div></section>
   <section class="cur" id="sec-drill"><h2>🎯 تمرين البيع</h2><div id="drillBox"></div></section>
   <section class="cur" id="sec-quiz"><h2>🧠 كويز النهارده</h2><div id="qList"></div><div id="qScore" class="score hide"></div></section>
   <section class="cur" id="sec-warm"><h2>⚡ جولة سرعة — اختار أول خطوة قبل ما الوقت يخلص</h2><div id="warmBox"></div></section>
@@ -141,6 +164,7 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
 
   <section class="cur" id="sec-settings">
     <h2>⏰ مواعيد الإشعارات</h2>
+    <div class="row"><span>📚 درس المنهج</span><input type="time" id="sLs"></div>
     <div class="row"><span>🎯 تمرين البيع</span><input type="time" id="sD"></div>
     <div class="row"><span>⚡ جولة السرعة</span><input type="time" id="sW"></div>
     <div class="row"><span>⚡ الجولة يوم الجمعة</span><input type="time" id="sWF"></div>
@@ -171,11 +195,15 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
 
 <script src="scenarios.js"></script>
 <script src="quiz.js"></script>
+<script src="curriculum1.js"></script>
+<script src="curriculum2.js"></script>
+<script src="curriculum3.js"></script>
 <script>
-const APP_V = 3;
+const APP_V = 4;
 const LS = 'sd_state_v1';
 const $ = id => document.getElementById(id);
-const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/\n/g,'<br>');
+const escA = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc = s => escA(s).replace(/(^|[\s(«:،/])([+−-]\d+(?:\.\d+)?(?:\s*(?:[+−-]\d+(?:\.\d+)?|[×x]\s*\d+))*(?:\s?[DΔ])?)/g, '$1<bdi dir="ltr">$2</bdi>').replace(/\n/g,'<br>');
 const NAT = window.Android || null;
 const P = n => '<bdi dir="ltr">' + n + '%</bdi>';
 
@@ -194,10 +222,10 @@ const T = {
 };
 const norm = s => (s||'').toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
 
-function defSet(){ return {d:'17:30', q:'21:00', w:'18:15', wf:'15:15', l:'23:35', lvl:'auto'}; }
-function defState(){ return {dUsed:[], qUsed:[], cSeen:[], days:{}, wrong:[], qt:0, qr:0, dWeak:[], real:[], met:{}, rts:[], set:defSet()}; }
+function defSet(){ return {ls:'13:30', d:'17:30', q:'21:00', w:'18:15', wf:'15:15', l:'23:35', lvl:'auto'}; }
+function defState(){ return {dUsed:[], qUsed:[], cSeen:[], days:{}, wrong:[], qt:0, qr:0, dWeak:[], real:[], met:{}, rts:[], cu:{done:{}, pass:{}, cw:[]}, set:defSet()}; }
 let S;
-try { S = Object.assign(defState(), JSON.parse(localStorage.getItem(LS) || '{}')); S.set = Object.assign(defSet(), S.set); } catch(e){ S = defState(); }
+try { S = Object.assign(defState(), JSON.parse(localStorage.getItem(LS) || '{}')); S.set = Object.assign(defSet(), S.set); S.cu = Object.assign({done:{}, pass:{}, cw:[]}, S.cu); } catch(e){ S = defState(); }
 function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e){} }
 
 // ───── التاريخ والعشوائي الثابت ─────
@@ -382,8 +410,138 @@ function reactionMark(){
 }
 document.addEventListener('input', e => { if (e.target.id === 'dAns') reactionMark(); });
 
+// ───── المنهج 📚 ─────
+const ALL_L = []; CURR.sort((a, b) => a.lv - b.lv).forEach(L => L.lessons.forEach((l, i) => ALL_L.push({L, l, i})));
+const LI = {}; ALL_L.forEach(x => LI[x.l.id] = x);
+const COLORS = ['#a3e635','#38bdf8','#f59e0b','#f472b6','#a78bfa','#34d399','#fb7185'];
+function lvOpen(lv){ return lv === 0 || !!S.cu.pass[lv - 1]; }
+function lessonOpen(x){ return lvOpen(x.L.lv) && (x.i === 0 || !!S.cu.done[x.L.lessons[x.i - 1].id] || !!S.cu.pass[x.L.lv]); }
+function nextLesson(){ return ALL_L.find(x => lvOpen(x.L.lv) && !S.cu.done[x.l.id]) || null; }
+function cwDue(){ const t = today(); return S.cu.cw.filter(w => w.due <= t && LI[w.lid]); }
+function cwWrong(lid, qi){ const k = S.cu.cw.findIndex(w => w.lid === lid && w.qi === qi); const w = {lid, qi, step: 0, due: addDays(today(), 1)}; if (k >= 0) S.cu.cw[k] = w; else S.cu.cw.push(w); }
+const STEPS = [1, 3, 7];
+let lv = {view: 'path', open: null, lid: null, ans: [], exam: null};
+function markLearnDay(){ dayObj(today()).l = true; save(); }
+function qHtml(q, key, n, ans, label){
+  const ord = order(key, 'c'), done = ans != null;
+  return '<div class="q"><div class="qh">' + label + '</div><div class="qt">' + esc(q[0]) + '</div>' + ord.map((oi, k) => {
+    let c = ''; if (done) { if (oi === q[2]) c = 'right'; else if (oi === ans) c = 'wrong'; }
+    return '<button class="opt ' + c + '" data-lq="' + n + '" data-o="' + oi + '"' + (done ? ' disabled' : '') + '><span class="l">' + LET[k] + '</span><span>' + esc(q[1][oi]) + '</span></button>';
+  }).join('') + (done ? '<div class="exp">' + (ans === q[2] ? '✅ صح! ' : '❌ الإجابة الصح: ' + LET[ord.indexOf(q[2])] + ' — ') + esc(q[3]) + '</div>' : '') + '</div>';
+}
+function renderLearn(){
+  const box = $('learnBox');
+  const top = (t, back) => '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' + (back ? '<button class="ib" id="lBack" style="width:36px;height:36px;font-size:16px">→</button>' : '') + '<h2 style="margin:0">' + t + '</h2></div>';
+  if (lv.view === 'lesson') return renderLesson(box, top);
+  if (lv.view === 'exam') return renderExam(box, top);
+  if (lv.view === 'review') return renderCReview(box, top);
+  const doneN = Object.keys(S.cu.done).length, due = cwDue().length, nx = nextLesson();
+  let h = top('📚 المنهج — من الصفر للاحتراف');
+  h += '<div class="mut">7 مستويات • ' + ALL_L.length + ' درس • كل درس: خريطة ← قاعدة ← مهمة في المحل ← اختبار. عدّي الاختبار (2 من 3) يفتحلك اللي بعده، وامتحان المستوى (8 من 10) يفتحلك المستوى الجاي.</div>';
+  h += '<div class="pbar" style="height:10px;margin:10px 0"><i style="width:' + Math.round(doneN / ALL_L.length * 100) + '%"></i></div><div class="mut">' + doneN + ' من ' + ALL_L.length + ' درس خلصوا</div>';
+  if (nx) h += '<button class="btn" data-lid="' + nx.l.id + '">▶️ درس النهارده: ' + nx.l.e + ' ' + esc(nx.l.t) + '</button>';
+  if (due) h += '<button class="btn sec" id="lRev">🔁 مراجعة المنهج (' + due + ')</button>';
+  h += '<div style="margin-top:12px"></div>';
+  CURR.forEach(L => {
+    const open = lvOpen(L.lv), n = L.lessons.filter(l => S.cu.done[l.id]).length, pass = S.cu.pass[L.lv];
+    h += '<div class="lvl' + (open ? '' : ' lock') + (lv.open === L.lv ? ' open' : '') + '"><button data-lv="' + L.lv + '"><span class="le">' + L.e + '</span><span style="flex:1"><b>المستوى ' + L.lv + ': ' + esc(L.t) + '</b><small>' + esc(L.d) + '</small><div class="pbar"><i style="width:' + Math.round(n / L.lessons.length * 100) + '%"></i></div></span><span>' + (pass ? '🏅' : open ? n + '/' + L.lessons.length : '🔒') + '</span></button><div class="body">';
+    L.lessons.forEach((l, i) => {
+      const x = LI[l.id], ok = lessonOpen(x), d = S.cu.done[l.id];
+      h += '<button class="les" data-lid="' + l.id + '"' + (ok ? '' : ' disabled') + '><span>' + l.e + '</span><span>' + esc(l.t) + '</span><span class="st2">' + (d ? '✅ ' + d.s + '/3' : ok ? '▶️' : '🔒') + '</span></button>';
+    });
+    if (open) h += '<button class="btn ' + (n === L.lessons.length && !pass ? '' : 'sec') + '" data-exam="' + L.lv + '">' + (pass ? '🏅 عدّيت (' + pass + '/10) — أعد الامتحان' : n === L.lessons.length ? '🎓 امتحان المستوى (10 أسئلة)' : '⏭️ عارف المستوى ده؟ امتحن وعدّي') + '</button>';
+    else h += '<p class="mut">🔒 عدّي امتحان المستوى اللي قبله عشان يتفتح</p>';
+    h += '</div></div>';
+  });
+  box.innerHTML = h;
+  box.querySelectorAll('[data-lv]').forEach(b => b.onclick = () => { const v = +b.dataset.lv; lv.open = lv.open === v ? null : v; renderLearn(); });
+  box.querySelectorAll('[data-lid]').forEach(b => b.onclick = () => { lv = Object.assign(lv, {view: 'lesson', lid: b.dataset.lid, ans: []}); renderLearn(); $('sec-learn').scrollIntoView({block:'start'}); });
+  box.querySelectorAll('[data-exam]').forEach(b => b.onclick = () => startExam(+b.dataset.exam));
+  if ($('lRev')) $('lRev').onclick = () => { lv.view = 'review'; lv.rev = cwDue().slice(0, 6).map(w => ({lid: w.lid, qi: w.qi, a: null})); renderLearn(); };
+}
+function renderLesson(box, top){
+  const x = LI[lv.lid], l = x.l;
+  let h = top(l.e + ' ' + esc(l.t), true) + '<div class="chips"><span class="chip">' + x.L.e + ' المستوى ' + x.L.lv + ': ' + esc(x.L.t) + '</span><span class="chip">درس ' + (x.i + 1) + ' من ' + x.L.lessons.length + '</span></div>';
+  h += '<div class="box"><h3>💡 ليه يهمك</h3>' + esc(l.why) + '</div>';
+  l.map.forEach((m, i) => { h += '<div class="mapc" style="--c:' + COLORS[i % COLORS.length] + '"><h3>' + esc(m[0]) + '</h3><ul>' + m[1].map(p => '<li>' + esc(p) + '</li>').join('') + '</ul></div>'; });
+  h += '<div class="box rule"><h3>🧠 احفظ دي</h3>' + esc(l.rule) + '</div>';
+  if (l.sci) h += '<div class="box sci"><h3>📚 من الأبحاث</h3>' + esc(l.sci) + '</div>';
+  h += '<div class="box task"><h3>🏪 مهمتك في المحل</h3>' + esc(l.store) + '</div>';
+  h += '<h2 style="margin-top:16px">✍️ اختبر نفسك</h2>';
+  l.q.forEach((q, n) => { h += qHtml(q, l.id + n, n, lv.ans[n], 'سؤال ' + (n + 1) + ' من ' + l.q.length); });
+  if (lv.ans.length === l.q.length && lv.ans.every(a => a != null)) {
+    const r = l.q.filter((q, n) => lv.ans[n] === q[2]).length, ok = r >= 2;
+    h += '<div class="score">' + (ok ? '✅ ' : '💪 ') + r + ' من 3' + (ok ? ' — الدرس خلص' : ' — محتاج 2 على الأقل') + '</div>';
+    const nx = ALL_L[ALL_L.indexOf(x) + 1];
+    h += ok ? (nx && lessonOpen(nx) ? '<button class="btn" id="lNext">الدرس الجاي: ' + nx.l.e + ' ' + esc(nx.l.t) + ' ←</button>' : nx ? '<button class="btn" id="lExam">🎓 امتحان المستوى ' + x.L.lv + '</button>' : '') : '<button class="btn" id="lRetry">🔁 راجع الخريطة وجرب تاني</button>';
+  }
+  box.innerHTML = h;
+  $('lBack').onclick = () => { lv.view = 'path'; lv.open = x.L.lv; renderLearn(); };
+  box.querySelectorAll('[data-lq]').forEach(b => b.onclick = () => {
+    const n = +b.dataset.lq, o = +b.dataset.o; if (lv.ans[n] != null) return;
+    lv.ans[n] = o;
+    if (o !== l.q[n][2]) cwWrong(l.id, n);
+    if (lv.ans.filter(a => a != null).length === l.q.length) {
+      const r = l.q.filter((q, k) => lv.ans[k] === q[2]).length;
+      if (r >= 2) { const prev = S.cu.done[l.id]; S.cu.done[l.id] = {s: Math.max(r, prev ? prev.s : 0), d: today()}; markLearnDay(); }
+      save(); renderStats();
+    }
+    renderLearn();
+  });
+  if ($('lNext')) $('lNext').onclick = () => { const nx = ALL_L[ALL_L.indexOf(x) + 1]; lv = Object.assign(lv, {lid: nx.l.id, ans: []}); renderLearn(); $('sec-learn').scrollIntoView({block:'start'}); };
+  if ($('lExam')) $('lExam').onclick = () => startExam(x.L.lv);
+  if ($('lRetry')) $('lRetry').onclick = () => { lv.ans = []; renderLearn(); $('sec-learn').scrollIntoView({block:'start'}); };
+}
+function startExam(lvl){
+  const L = CURR.find(c => c.lv === lvl), pool = [];
+  L.lessons.forEach(l => l.q.forEach((q, qi) => pool.push({lid: l.id, qi})));
+  pool.sort(() => Math.random() - .5);
+  lv = Object.assign(lv, {view: 'exam', exam: {lv: lvl, items: pool.slice(0, 10).map(p => Object.assign(p, {a: null}))}});
+  renderLearn(); $('sec-learn').scrollIntoView({block:'start'});
+}
+function renderExam(box, top){
+  const ex = lv.exam, L = CURR.find(c => c.lv === ex.lv);
+  let h = top('🎓 امتحان المستوى ' + ex.lv + ': ' + esc(L.t), true) + '<div class="mut">10 أسئلة — محتاج 8 عشان تعدّي وتفتح المستوى الجاي.</div>';
+  ex.items.forEach((it, n) => { const q = LI[it.lid].l.q[it.qi]; h += qHtml(q, it.lid + it.qi + 'x', n, it.a, (n + 1) + ' من 10 • ' + LI[it.lid].l.e + ' ' + esc(LI[it.lid].l.t)); });
+  if (ex.items.every(it => it.a != null)) {
+    const r = ex.items.filter(it => it.a === LI[it.lid].l.q[it.qi][2]).length;
+    h += '<div class="score">' + (r >= 8 ? '🏅 ' + r + ' من 10 — عدّيت المستوى!' : '💪 ' + r + ' من 10 — محتاج 8') + '</div>';
+    h += r >= 8 && CURR.find(c => c.lv === ex.lv + 1) ? '<button class="btn" id="eGo">🚀 افتح المستوى ' + (ex.lv + 1) + '</button>' : '<button class="btn sec" id="eGo">↩️ رجوع للمنهج</button>';
+  }
+  box.innerHTML = h;
+  $('lBack').onclick = () => { lv.view = 'path'; renderLearn(); };
+  box.querySelectorAll('[data-lq]').forEach(b => b.onclick = () => {
+    const it = ex.items[+b.dataset.lq]; if (it.a != null) return;
+    it.a = +b.dataset.o; const q = LI[it.lid].l.q[it.qi];
+    if (it.a !== q[2]) cwWrong(it.lid, it.qi);
+    if (ex.items.every(x => x.a != null)) {
+      const r = ex.items.filter(x => x.a === LI[x.lid].l.q[x.qi][2]).length;
+      if (r >= 8) { S.cu.pass[ex.lv] = Math.max(r, S.cu.pass[ex.lv] || 0); L.lessons.forEach(l => { if (!S.cu.done[l.id]) S.cu.done[l.id] = {s: 3, d: today(), ex: 1}; }); }
+      markLearnDay(); save(); renderStats();
+    }
+    renderLearn();
+  });
+  if ($('eGo')) $('eGo').onclick = () => { lv.view = 'path'; lv.open = S.cu.pass[ex.lv] ? ex.lv + 1 : ex.lv; renderLearn(); };
+}
+function renderCReview(box, top){
+  const its = lv.rev || [];
+  let h = top('🔁 مراجعة المنهج', true) + '<div class="mut">الأسئلة اللي غلطت فيها بترجعلك بعد يوم، وبعدين 3 أيام، وبعدين أسبوع — لحد ما تثبت.</div>';
+  its.forEach((it, n) => { const x = LI[it.lid]; h += qHtml(x.l.q[it.qi], it.lid + it.qi + 'r' + today(), n, it.a, x.l.e + ' ' + esc(x.l.t)); });
+  if (!its.length) h += '<div class="mut">🎉 مفيش مراجعة مستنية</div>';
+  else if (its.every(it => it.a != null)) h += '<div class="score">✅ ' + its.filter(it => it.a === LI[it.lid].l.q[it.qi][2]).length + ' من ' + its.length + '</div>';
+  box.innerHTML = h;
+  $('lBack').onclick = () => { lv.view = 'path'; renderLearn(); };
+  box.querySelectorAll('[data-lq]').forEach(b => b.onclick = () => {
+    const it = its[+b.dataset.lq]; if (it.a != null) return;
+    it.a = +b.dataset.o; const ok = it.a === LI[it.lid].l.q[it.qi][2];
+    const k = S.cu.cw.findIndex(w => w.lid === it.lid && w.qi === it.qi);
+    if (k >= 0) { const w = S.cu.cw[k]; if (ok) { w.step++; if (w.step >= STEPS.length) S.cu.cw.splice(k, 1); else w.due = addDays(today(), STEPS[w.step]); } else { w.step = 0; w.due = addDays(today(), 1); } }
+    markLearnDay(); save(); renderStats(); renderLearn();
+  });
+}
+
 // ───── الإحصائيات ─────
-function doneDay(ds){ const d = S.days[ds]; return !!(d && ((d.d && d.d.done) || (d.q && d.q.done) || (d.w && d.w.done))); }
+function doneDay(ds){ const d = S.days[ds]; return !!(d && ((d.d && d.d.done) || (d.q && d.q.done) || (d.w && d.w.done) || d.l)); }
 function streak(){ let ds = today(), n = 0; if (!doneDay(ds)) ds = addDays(ds, -1); while (doneDay(ds)) { n++; ds = addDays(ds, -1); } return n; }
 function metSum(from, n){ let v = 0, c = 0, a = 0, s = 0; for (let i = 0; i < n; i++) { const m = S.met[addDays(from, -i)]; if (m) { v += +m.v || 0; c += +m.c || 0; a += +m.a || 0; s += +m.s || 0; } } return {v, c, a, s}; }
 const pct = (x, y) => y ? Math.round(x / y * 100) : null;
@@ -400,6 +558,8 @@ function renderStats(){
   $('tShift').innerHTML = S.met[today()] ? '<span class="ok">✔ الأرقام اتسجلت</span>' : 'أرقامي + موقف حقيقي';
   const pend = S.wrong.length + S.dWeak.length;
   $('tRev').textContent = pend ? '🔁 ' + pend + ' هيرجعولك' : 'الغلط + آخر أيام';
+  const nx = nextLesson(), due = cwDue().length;
+  $('tLearn').innerHTML = (nx ? 'درس النهارده: ' + nx.l.e + ' ' + esc(nx.l.t) : '🏆 خلصت المنهج كله') + (due ? ' • 🔁 ' + due + ' مراجعة' : '') + ' • ' + Object.keys(S.cu.done).length + ' من ' + ALL_L.length;
   renderPlan();
 }
 
@@ -447,7 +607,7 @@ function renderDrill(){
     const help = grade(s.k, '').map(x => '<li>⬜ ' + esc(x.label) + '</li>').join('');
     const openHelp = dd.lvl === 1 || dd.help;
     h += '<div class="bar' + (rt.marked ? ' hide' : '') + '" id="rtBar"><i></i></div><div class="tmsg" id="rtMsg"></div>';
-    h += '<div class="acc' + (openHelp ? ' open' : '') + '" id="hAcc" style="margin:0 0 10px"><button>💡 مساعدة: ردك المفروض فيه إيه؟ <span>⌄</span></button><div><ul class="chk">' + help + '</ul><div class="mut" style="margin-top:8px">ابدأ بجملة من دول (دوس عليها):</div><div class="chips" style="margin-top:6px">' + STARTERS.map(x => '<button class="chip" data-st2="' + esc(x) + '">' + esc(x) + '</button>').join('') + '</div><button class="btn sec" id="dFirst" style="padding:8px;font-size:14px">🙋 مش عارف أبدأ — وريني أول خطوة</button><div id="dFirstOut"></div></div></div>';
+    h += '<div class="acc' + (openHelp ? ' open' : '') + '" id="hAcc" style="margin:0 0 10px"><button>💡 مساعدة: ردك المفروض فيه إيه؟ <span>⌄</span></button><div><ul class="chk">' + help + '</ul><div class="mut" style="margin-top:8px">ابدأ بجملة من دول (دوس عليها):</div><div class="chips" style="margin-top:6px">' + STARTERS.map(x => '<button class="chip" data-st2="' + escA(x) + '">' + esc(x) + '</button>').join('') + '</div><button class="btn sec" id="dFirst" style="padding:8px;font-size:14px">🙋 مش عارف أبدأ — وريني أول خطوة</button><div id="dFirstOut"></div></div></div>';
     h += inputBlock('dAns', 'رد على العميل — اكتب أو دوس 🎙️ واتكلم') + '<button class="btn" id="dGo">✍️ شوف التقييم</button>';
     box.innerHTML = h;
     $('hAcc').firstChild.onclick = () => { $('hAcc').classList.toggle('open'); dd.help = true; reactionMark(); };
@@ -663,13 +823,13 @@ function renderReview(){
 function nativeSync(){
   if (!NAT) return;
   try {
-    if (NAT.scheduleJson) NAT.scheduleJson(JSON.stringify({drill: S.set.d, quiz: S.set.q, warm: S.set.w, warm_fri: S.set.wf, log: S.set.l}));
+    if (NAT.scheduleJson) NAT.scheduleJson(JSON.stringify({lesson: S.set.ls, drill: S.set.d, quiz: S.set.q, warm: S.set.w, warm_fri: S.set.wf, log: S.set.l}));
     else if (NAT.schedule) NAT.schedule(S.set.d, S.set.q);
   } catch(e){}
   syncPlan();
 }
 function renderSettings(){
-  $('sD').value = S.set.d; $('sQ').value = S.set.q; $('sW').value = S.set.w; $('sWF').value = S.set.wf; $('sL').value = S.set.l; $('sLvl').value = S.set.lvl;
+  $('sLs').value = S.set.ls; $('sD').value = S.set.d; $('sQ').value = S.set.q; $('sW').value = S.set.w; $('sWF').value = S.set.wf; $('sL').value = S.set.l; $('sLvl').value = S.set.lvl;
   $('sVer').textContent = 'الإصدار ' + APP_V + (NAT ? ' • APK' : ' • متصفح');
   if (!NAT) { $('natBox').classList.add('hide'); $('noNat').classList.remove('hide'); return; }
   $('oldApk').classList.toggle('hide', !!NAT.scheduleJson);
@@ -678,7 +838,7 @@ function renderSettings(){
   $('sPerm').style.color = p === 'granted' ? 'var(--grn)' : 'var(--red)';
 }
 $('sSave').onclick = () => {
-  const v = {d: $('sD').value, q: $('sQ').value, w: $('sW').value, wf: $('sWF').value, l: $('sL').value};
+  const v = {ls: $('sLs').value, d: $('sD').value, q: $('sQ').value, w: $('sW').value, wf: $('sWF').value, l: $('sL').value};
   if (Object.values(v).some(x => !x)) return toast('⏰ اختار كل المواعيد');
   S.set = Object.assign(S.set, v, {lvl: $('sLvl').value}); save(); nativeSync(); renderStats();
   toast(NAT ? '✅ اتظبطت المواعيد' : '✅ اتحفظت (الإشعار من الـ APK)');
@@ -695,8 +855,8 @@ window.onPermResult = () => renderSettings();
 
 // ───── التنقل بين الأقسام ─────
 let open = null;
-const SECS = ['drill','quiz','warm','shift','review','settings'];
-const RENDER = {drill: renderDrill, quiz: renderQuiz, warm: renderWarm, review: renderReview, settings: renderSettings,
+const SECS = ['learn','drill','quiz','warm','shift','review','settings'];
+const RENDER = {learn: () => renderLearn(), drill: renderDrill, quiz: renderQuiz, warm: renderWarm, review: renderReview, settings: renderSettings,
   shift: () => { const a = $('accMet'), b = $('accReal'); a.classList.toggle('open', !S.met[today()]); b.classList.remove('open'); if (!S.met[today()]) renderMet(); }};
 function showSec(name, scroll = true){
   micStop(); clearInterval(wt.h);

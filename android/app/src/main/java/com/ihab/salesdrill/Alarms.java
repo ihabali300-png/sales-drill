@@ -16,12 +16,13 @@ import java.util.Calendar;
 public final class Alarms {
     static final String PREFS = "alarms";
     static final String CH = "daily_training";
-    static final String[] TYPES = {"drill", "quiz", "warm", "log"};
+    static final String[] TYPES = {"lesson", "drill", "quiz", "warm", "log"};
 
     static SharedPreferences prefs(Context c) { return c.getSharedPreferences(PREFS, Context.MODE_PRIVATE); }
 
     static String def(String type) {
         switch (type) {
+            case "lesson": return "13:30";
             case "drill": return "17:30";
             case "quiz": return "21:00";
             case "warm": return "18:15";
@@ -31,10 +32,10 @@ public final class Alarms {
     }
 
     static int code(String type) {
-        switch (type) { case "drill": return 101; case "quiz": return 102; case "warm": return 103; default: return 104; }
+        switch (type) { case "lesson": return 105; case "drill": return 101; case "quiz": return 102; case "warm": return 103; default: return 104; }
     }
 
-    static String sec(String type) { return "log".equals(type) ? "shift" : type; }
+    static String sec(String type) { return "log".equals(type) ? "shift" : "lesson".equals(type) ? "learn" : type; }
 
     static void save(Context c, String drill, String quiz) {
         prefs(c).edit().putString("drill", drill).putString("quiz", quiz).apply();
@@ -45,7 +46,7 @@ public final class Alarms {
         try {
             org.json.JSONObject o = new org.json.JSONObject(json);
             SharedPreferences.Editor e = prefs(c).edit();
-            for (String k : new String[]{"drill", "quiz", "warm", "warm_fri", "log"})
+            for (String k : new String[]{"lesson", "drill", "quiz", "warm", "warm_fri", "log"})
                 if (o.has(k)) e.putString(k, o.getString(k));
             e.apply();
         } catch (Exception ignored) { }
@@ -109,6 +110,7 @@ public final class Alarms {
         ensureChannel(c);
         String title, text;
         switch (type) {
+            case "lesson": title = "📚 درس النهارده من المنهج"; text = "خريطة ← قاعدة ← مهمة في المحل ← 3 أسئلة — 10 دقايق بس"; break;
             case "drill": title = "🎯 تمرين البيع النهارده جاهز"; text = "عميل مستنيك.. عندك 5 ثواني تبدأ ترد 🔥"; break;
             case "quiz": title = "🧠 كويز النهارده — 3 أسئلة"; text = "Brillmann وبروقرسف وقياسات — يلا نشوف 💪"; break;
             case "warm":
