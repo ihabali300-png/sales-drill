@@ -114,6 +114,7 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
 .box.task{border-color:#a855f7;background:#1d1328}.box.task h3{color:#d8b4fe}
 .pbar{height:6px;background:#0e1a11;border-radius:99px;overflow:hidden;margin-top:6px}
 .pbar i{display:block;height:100%;background:var(--lime)}
+.limg{margin:10px 0 0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0e1a11}.limg img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}.limg figcaption{font-size:13px;color:var(--mut);padding:6px 10px}
 .v3box{border:1px solid #2f5a36;border-radius:14px;margin-top:12px;overflow:hidden;background:#0e1a11}
 .v3box>h3{margin:0;padding:10px 12px;font-size:15px;color:var(--lime)}
 .v3c{position:relative;height:330px;background:radial-gradient(circle at 50% 40%,#1d3324,#0b130d 75%);touch-action:none}
@@ -215,7 +216,7 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
 <script src="curriculum2.js"></script>
 <script src="curriculum3.js"></script>
 <script>
-const APP_V = 8;
+const APP_V = 9;
 const LS = 'sd_state_v1';
 const $ = id => document.getElementById(id);
 const escA = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -441,6 +442,10 @@ let lv = {view: 'path', open: null, lid: null, ans: [], exam: null};
 const VIZ = {'0-1':['eye',{type:'norm'}], '0-2':['eye',{type:'myo'}], '1-1':['thick',{F:-6}], '1-2':['thick',{F:-6, ED:60}], '1-3':['prog',{design:1}],
   '4-3':['prog',{}], '4-4':['prog',{SH:21}], '5-1':['prism',{}], '5-2':['prism',{mode:'prentice', dx:3}], '5-3':['pow',{vertex:16, F:-8}],
   '5-4':['pow',{}], '5-5':['pow',{wrap:0}], '5-7':['pow',{panto:14}], '1-8':['pow',{low:true}]};
+const IMG = {'0-1':['eye','تشريح العين: الضوء بيعدّي من القرنية والعدسة ويتجمع على النقرة في الشبكية'], '0-2':['eye','في العين الطبيعية الضوء بيتجمع على الشبكية بالظبط'],
+  '1-1':['lenses','نفس القوة السالب: كل ما الـ Index يعلى، الطرف يرفع'], '1-2':['lenses','الطرف التخين في السالب — وده اللي بنحاول نقلله'],
+  '1-9':['lensmeter','الليزوميتر: العدسة على الحامل، والجهاز بيقرا الكروي والأسطواني والمحور'], '4-3':['prog','البروقرسف: بعيد فوق، ممر في النص، قراية تحت، وتشويش على الجنبين'],
+  '4-4':['prog','منطقة القراية لازم تفضل جوه الإطار بعد القص'], '5-7':['adjust','ضبط الإطار على وش العميل — وانت قدامه'], '0-6':['adjust','التسليم والضبط على الوش جزء من رحلة النظارة']};
 const VIZT = {pow:'🕶️ وضع النظارة على الوش', thick:'🔪 سُمك العدسة', prog:'🌊 مناطق البروقرسف', prism:'🔺 البريزم وبرنتيس', eye:'👁️ العين وعيوب الإبصار'};
 let viz = null;   // {key, wrap, inst}
 function vizDispose(){ if (viz) { try { viz.inst && viz.inst.dispose(); } catch(e){} viz = null; } }
@@ -502,6 +507,7 @@ function renderLesson(box, top){
   const x = LI[lv.lid], l = x.l;
   let h = top(l.e + ' ' + esc(l.t), true) + '<div class="chips"><span class="chip">' + x.L.e + ' المستوى ' + x.L.lv + ': ' + esc(x.L.t) + '</span><span class="chip">درس ' + (x.i + 1) + ' من ' + x.L.lessons.length + '</span></div>';
   h += '<div class="box"><h3>💡 ليه يهمك</h3>' + esc(l.why) + '</div>';
+  const im = IMG[l.id]; if (im) h += '<figure class="limg"><img src="assets/img/' + im[0] + '.webp" loading="lazy" alt=""><figcaption>' + esc(im[1]) + '</figcaption></figure>';
   l.map.forEach((m, i) => { h += '<div class="mapc" style="--c:' + COLORS[i % COLORS.length] + '"><h3>' + esc(m[0]) + '</h3><ul>' + m[1].map(p => '<li>' + esc(p) + '</li>').join('') + '</ul></div>'; });
   const vz = VIZ[l.id]; if (vz) h += '<div id="vizSlot"></div>';
   h += '<div class="box rule"><h3>🧠 احفظ دي</h3>' + esc(l.rule) + '</div>';
