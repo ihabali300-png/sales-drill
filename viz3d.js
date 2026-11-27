@@ -1,6 +1,7 @@
 // 🧊 المعمل 3D — مشاهد تفاعلية ناعمة للدروس (Three.js)
 import * as THREE from './vendor/three.module.min.js';
 import { OrbitControls } from './vendor/OrbitControls.js';
+import { GLTFLoader } from './vendor/GLTFLoader.js';
 
 const MM = 1 / 120;                 // 1 مم بوحدات المشهد (الراس ≈ 24 سم)
 const D2R = Math.PI / 180;
@@ -115,7 +116,7 @@ const lensMat = () => new THREE.MeshPhysicalMaterial({color: 0xcff3ff, transpare
 
 // ═════════ 1) وضع النظارة على الوش ═════════
 function scenePOW(host, o = {}) {
-  const B = base(host, {cam: [1.5, .45, 2.0], target: [0, .12, .75], min: .9, max: 6});
+  const B = base(host, {cam: [2.0, .5, 2.7], target: [0, .05, .6], min: .9, max: 7});
   const {scene} = B;
   const head = new THREE.Group(); scene.add(head);
   const skull = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 48), skinMat()); skull.scale.set(.78, 1, .9); head.add(skull);
@@ -130,6 +131,13 @@ function scenePOW(host, o = {}) {
   });
   const nose = new THREE.Mesh(new THREE.ConeGeometry(.075, .26, 32), skinMat()); nose.rotation.x = Math.PI / 2 + .35; nose.position.set(0, -.04, .92); head.add(nose);
   [-1, 1].forEach(s => { const ear = new THREE.Mesh(new THREE.TorusGeometry(.1, .035, 12, 24, Math.PI * 1.3), skinMat()); ear.position.set(s * .78, .04, -.02); ear.rotation.y = s * Math.PI / 2; ear.rotation.z = -.6; head.add(ear); });
+  // 🧑 راس واقعي (Higgsfield 3D) — بيتحمّل وبيحل محل الراس البسيط
+  const ear = {x: .76, y: .14, z: -.05};
+  new GLTFLoader().load(new URL('./assets/head.glb', import.meta.url).href, gl => {
+    const m = gl.scene; m.scale.setScalar(2.15); m.rotation.y = -Math.PI / 2; m.position.set(0, -.065, .299);
+    m.traverse(o => { if (o.isMesh && o.material) { o.material.roughness = .72; o.material.metalness = 0; } });
+    head.visible = false; scene.add(m); Object.assign(ear, {x: .61, y: .11, z: .1}); B.kick(400);
+  }, undefined, () => {});
 
   // الإطار
   const P = {panto: o.panto ?? 8, wrap: o.wrap ?? 5, vertex: o.vertex ?? 12, F: o.F ?? -4, low: o.low ?? false};
@@ -161,7 +169,7 @@ function scenePOW(host, o = {}) {
     front.updateMatrixWorld(true);
     lenses.forEach((L, i) => {
       const hinge = new THREE.Vector3(L.s * (A / 2 + 2 * MM), Bh / 2 - 4 * MM, -1 * MM); L.lg.localToWorld(hinge);
-      temples[i].userData.set(hinge, new THREE.Vector3(L.s * .76, .14, -.05));
+      temples[i].userData.set(hinge, new THREE.Vector3(L.s * ear.x, ear.y, ear.z));
       const eyeP = new THREE.Vector3(L.s * EX, EY, EZ + .105);
       const n = new THREE.Vector3(0, 0, 1).transformDirection(L.lg.matrixWorld), p0 = new THREE.Vector3().setFromMatrixPosition(L.lg.matrixWorld);
       const dir = new THREE.Vector3(0, 0, 1), t = n.dot(p0.clone().sub(eyeP)) / n.dot(dir);
@@ -184,7 +192,7 @@ function scenePOW(host, o = {}) {
       '<div class="mut">🟢 الخط الأخضر = اتجاه النظر • ✚ الأصفر = المركز البصري</div>';
   };
   const upd = to => { Object.assign(P, to); B.tween(state, to, 700); calc(); };
-  chips(u, '🎥 الزاوية', [['side', 'من الجنب'], ['top', 'من فوق'], ['front', 'من قدام'], ['free', '3/4']], 'free', v => B.camTo({side: [2.4, .15, .8], top: [0, 2.6, 1.0], front: [0, .15, 2.9], free: [1.5, .45, 2.0]}[v], [0, .12, .75]));
+  chips(u, '🎥 الزاوية', [['side', 'من الجنب'], ['top', 'من فوق'], ['front', 'من قدام'], ['free', '3/4']], 'free', v => B.camTo({side: [3.1, .15, .7], top: [0, 3.2, 1.0], front: [0, .1, 3.5], free: [2.0, .5, 2.7]}[v], [0, .05, .6]));
   chips(u, '⚡ جاهز', [['std', 'القياسي 8/5/12'], ['rim', 'رمليس الأذرع متوسعة'], ['tip', 'على طرف الأنف'], ['bad', 'بانتو عالي']], null, v => { const p = {std: {panto: 8, wrap: 5, vertex: 12}, rim: {panto: 8, wrap: 0, vertex: 12}, tip: {panto: 6, wrap: 5, vertex: 18}, bad: {panto: 18, wrap: 5, vertex: 12}}[v]; sP.set(p.panto); sW.set(p.wrap); sV.set(p.vertex); upd(p); });
   const sP = stepper(u, '↘️ البانتو', P.panto, 2, 0, 20, v => ltr(v + '°'), v => upd({panto: v}));
   const sW = stepper(u, '↪️ الوارب', P.wrap, 1, 0, 20, v => ltr(v + '°'), v => upd({wrap: v}));
