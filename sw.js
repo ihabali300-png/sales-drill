@@ -1,4 +1,4 @@
-const CACHE = 'sales-drill-v5';
+const CACHE = 'sales-drill-v6';
 const FILES = ['./', 'index.html', 'scenarios.js', 'quiz.js', 'curriculum1.js', 'curriculum2.js', 'curriculum3.js', 'manifest.json', 'icon-192.png', 'icon-512.png'];
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).catch(() => {})); });
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
