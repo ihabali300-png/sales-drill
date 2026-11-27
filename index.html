@@ -114,6 +114,22 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
 .box.task{border-color:#a855f7;background:#1d1328}.box.task h3{color:#d8b4fe}
 .pbar{height:6px;background:#0e1a11;border-radius:99px;overflow:hidden;margin-top:6px}
 .pbar i{display:block;height:100%;background:var(--lime)}
+.v3box{border:1px solid #2f5a36;border-radius:14px;margin-top:12px;overflow:hidden;background:#0e1a11}
+.v3box>h3{margin:0;padding:10px 12px;font-size:15px;color:var(--lime)}
+.v3c{position:relative;height:330px;background:radial-gradient(circle at 50% 40%,#1d3324,#0b130d 75%);touch-action:none}
+.v3c canvas{width:100%!important;height:100%!important;display:block}
+.v3h{position:absolute;top:8px;right:10px;font-size:12px;color:var(--mut);background:rgba(11,19,13,.7);padding:2px 8px;border-radius:8px;transition:opacity .6s;pointer-events:none}
+.v3u{padding:10px 12px}
+.v3row{display:flex;align-items:center;gap:8px;justify-content:space-between;margin:6px 0;flex-wrap:wrap}
+.v3l{font-size:13px;color:var(--mut)}
+.v3chips{display:flex;gap:6px;flex-wrap:wrap}
+.v3chip{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:999px;padding:4px 10px;font:inherit;font-size:13px}
+.v3chip.on{border-color:var(--lime);color:var(--lime);background:#1c2c12}
+.v3st{display:flex;align-items:center;gap:8px}
+.v3st button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--lime);font-size:20px;font-weight:700}
+.v3st b{min-width:70px;text-align:center}
+.v3r{background:#132017;border-radius:10px;padding:8px 10px;margin-top:8px;font-size:14px}
+.v3r div{margin:3px 0}
 </style>
 </head>
 <body>
@@ -199,7 +215,7 @@ input[type=time],select{background:#0e1a11;color:var(--txt);border:1px solid var
 <script src="curriculum2.js"></script>
 <script src="curriculum3.js"></script>
 <script>
-const APP_V = 6;
+const APP_V = 7;
 const LS = 'sd_state_v1';
 const $ = id => document.getElementById(id);
 const escA = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -421,6 +437,25 @@ function cwDue(){ const t = today(); return S.cu.cw.filter(w => w.due <= t && LI
 function cwWrong(lid, qi){ const k = S.cu.cw.findIndex(w => w.lid === lid && w.qi === qi); const w = {lid, qi, step: 0, due: addDays(today(), 1)}; if (k >= 0) S.cu.cw[k] = w; else S.cu.cw.push(w); }
 const STEPS = [1, 3, 7];
 let lv = {view: 'path', open: null, lid: null, ans: [], exam: null};
+// 🧊 مشاهد 3D للدروس
+const VIZ = {'0-1':['eye',{type:'norm'}], '0-2':['eye',{type:'myo'}], '1-1':['thick',{F:-6}], '1-2':['thick',{F:-6, ED:60}], '1-3':['prog',{design:1}],
+  '4-3':['prog',{}], '4-4':['prog',{SH:21}], '5-1':['prism',{}], '5-2':['prism',{mode:'prentice', dx:3}], '5-3':['pow',{vertex:16, F:-8}],
+  '5-4':['pow',{}], '5-5':['pow',{wrap:0}], '5-7':['pow',{panto:14}], '1-8':['pow',{low:true}]};
+const VIZT = {pow:'🕶️ وضع النظارة على الوش', thick:'🔪 سُمك العدسة', prog:'🌊 مناطق البروقرسف', prism:'🔺 البريزم وبرنتيس', eye:'👁️ العين وعيوب الإبصار'};
+let viz = null;   // {key, wrap, inst}
+function vizDispose(){ if (viz) { try { viz.inst && viz.inst.dispose(); } catch(e){} viz = null; } }
+function vizPlace(key, kind, opts){
+  const slot = $('vizSlot'); if (!slot) return;
+  if (viz && viz.key === key && viz.wrap) { slot.replaceWith(viz.wrap); return; }
+  vizDispose();
+  const wrap = document.createElement('div'); wrap.className = 'v3box';
+  wrap.innerHTML = '<h3>🧊 شوفها 3D: ' + VIZT[kind] + '</h3><div class="v3host"><div class="mut" style="padding:20px;text-align:center">⏳ بيحمّل المشهد…</div></div>';
+  slot.replaceWith(wrap);
+  viz = {key, wrap, inst: null};
+  import('./viz3d.js').then(m => { if (!viz || viz.key !== key) return; const h = wrap.querySelector('.v3host'); h.innerHTML = ''; viz.inst = m.mount(kind, h, opts); })
+    .catch(() => { const h = wrap.querySelector('.v3host'); if (h) h.innerHTML = '<div class="mut" style="padding:16px">⚠️ المشهد محتاج نت أول مرة عشان يتحمّل</div>'; });
+}
+function vizKeep(){ const w = viz && viz.wrap; if (w && w.parentNode) w.parentNode.removeChild(w); }
 function markLearnDay(){ dayObj(today()).l = true; save(); }
 function qHtml(q, key, n, ans, label){
   const ord = order(key, 'c'), done = ans != null;
@@ -432,6 +467,8 @@ function qHtml(q, key, n, ans, label){
 function renderLearn(){
   const box = $('learnBox');
   const top = (t, back) => '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' + (back ? '<button class="ib" id="lBack" style="width:36px;height:36px;font-size:16px">→</button>' : '') + '<h2 style="margin:0">' + t + '</h2></div>';
+  if (lv.view !== 'lesson' && lv.view !== 'lab') vizDispose();
+  if (lv.view === 'lab') return renderLab(box, top);
   if (lv.view === 'lesson') return renderLesson(box, top);
   if (lv.view === 'exam') return renderExam(box, top);
   if (lv.view === 'review') return renderCReview(box, top);
@@ -441,6 +478,7 @@ function renderLearn(){
   h += '<div class="pbar" style="height:10px;margin:10px 0"><i style="width:' + Math.round(doneN / ALL_L.length * 100) + '%"></i></div><div class="mut">' + doneN + ' من ' + ALL_L.length + ' درس خلصوا</div>';
   if (nx) h += '<button class="btn" data-lid="' + nx.l.id + '">▶️ درس النهارده: ' + nx.l.e + ' ' + esc(nx.l.t) + '</button>';
   if (due) h += '<button class="btn sec" id="lRev">🔁 مراجعة المنهج (' + due + ')</button>';
+  h += '<button class="btn sec" id="lLab">🧊 المعمل 3D — لفّ وشوف بنفسك</button>';
   h += '<div style="margin-top:12px"></div>';
   CURR.forEach(L => {
     const open = lvOpen(L.lv), n = L.lessons.filter(l => S.cu.done[l.id]).length, pass = S.cu.pass[L.lv];
@@ -457,6 +495,7 @@ function renderLearn(){
   box.querySelectorAll('[data-lv]').forEach(b => b.onclick = () => { const v = +b.dataset.lv; lv.open = lv.open === v ? null : v; renderLearn(); });
   box.querySelectorAll('[data-lid]').forEach(b => b.onclick = () => { lv = Object.assign(lv, {view: 'lesson', lid: b.dataset.lid, ans: []}); renderLearn(); $('sec-learn').scrollIntoView({block:'start'}); });
   box.querySelectorAll('[data-exam]').forEach(b => b.onclick = () => startExam(+b.dataset.exam));
+  $('lLab').onclick = () => { lv.view = 'lab'; lv.labK = lv.labK || 'pow'; renderLearn(); $('sec-learn').scrollIntoView({block:'start'}); };
   if ($('lRev')) $('lRev').onclick = () => { lv.view = 'review'; lv.rev = cwDue().slice(0, 6).map(w => ({lid: w.lid, qi: w.qi, a: null})); renderLearn(); };
 }
 function renderLesson(box, top){
@@ -464,6 +503,7 @@ function renderLesson(box, top){
   let h = top(l.e + ' ' + esc(l.t), true) + '<div class="chips"><span class="chip">' + x.L.e + ' المستوى ' + x.L.lv + ': ' + esc(x.L.t) + '</span><span class="chip">درس ' + (x.i + 1) + ' من ' + x.L.lessons.length + '</span></div>';
   h += '<div class="box"><h3>💡 ليه يهمك</h3>' + esc(l.why) + '</div>';
   l.map.forEach((m, i) => { h += '<div class="mapc" style="--c:' + COLORS[i % COLORS.length] + '"><h3>' + esc(m[0]) + '</h3><ul>' + m[1].map(p => '<li>' + esc(p) + '</li>').join('') + '</ul></div>'; });
+  const vz = VIZ[l.id]; if (vz) h += '<div id="vizSlot"></div>';
   h += '<div class="box rule"><h3>🧠 احفظ دي</h3>' + esc(l.rule) + '</div>';
   if (l.sci) h += '<div class="box sci"><h3>📚 من الأبحاث</h3>' + esc(l.sci) + '</div>';
   h += '<div class="box task"><h3>🏪 مهمتك في المحل</h3>' + esc(l.store) + '</div>';
@@ -475,7 +515,9 @@ function renderLesson(box, top){
     const nx = ALL_L[ALL_L.indexOf(x) + 1];
     h += ok ? (nx && lessonOpen(nx) ? '<button class="btn" id="lNext">الدرس الجاي: ' + nx.l.e + ' ' + esc(nx.l.t) + ' ←</button>' : nx ? '<button class="btn" id="lExam">🎓 امتحان المستوى ' + x.L.lv + '</button>' : '') : '<button class="btn" id="lRetry">🔁 راجع الخريطة وجرب تاني</button>';
   }
+  vizKeep();
   box.innerHTML = h;
+  if (vz) vizPlace('L' + l.id, vz[0], vz[1]); else vizDispose();
   $('lBack').onclick = () => { lv.view = 'path'; lv.open = x.L.lv; renderLearn(); };
   box.querySelectorAll('[data-lq]').forEach(b => b.onclick = () => {
     const n = +b.dataset.lq, o = +b.dataset.o; if (lv.ans[n] != null) return;
@@ -491,6 +533,14 @@ function renderLesson(box, top){
   if ($('lNext')) $('lNext').onclick = () => { const nx = ALL_L[ALL_L.indexOf(x) + 1]; lv = Object.assign(lv, {lid: nx.l.id, ans: []}); renderLearn(); $('sec-learn').scrollIntoView({block:'start'}); };
   if ($('lExam')) $('lExam').onclick = () => startExam(x.L.lv);
   if ($('lRetry')) $('lRetry').onclick = () => { lv.ans = []; renderLearn(); $('sec-learn').scrollIntoView({block:'start'}); };
+}
+function renderLab(box, top){
+  const K = ['pow','thick','prog','prism','eye'];
+  let h = top('🧊 المعمل 3D', true) + '<div class="mut">لفّ المشهد بصباعك، وغيّر القيم وشوف النتيجة بتتحرك قدامك.</div><div class="chips" style="margin-top:8px">' + K.map(k => '<button class="chip' + (lv.labK === k ? ' hot' : '') + '" data-lab="' + k + '">' + VIZT[k] + '</button>').join('') + '</div><div id="vizSlot"></div>';
+  vizKeep(); box.innerHTML = h;
+  vizPlace('LAB' + lv.labK, lv.labK, {});
+  $('lBack').onclick = () => { lv.view = 'path'; vizDispose(); renderLearn(); };
+  box.querySelectorAll('[data-lab]').forEach(b => b.onclick = () => { lv.labK = b.dataset.lab; renderLearn(); });
 }
 function startExam(lvl){
   const L = CURR.find(c => c.lv === lvl), pool = [];
@@ -859,7 +909,7 @@ const SECS = ['learn','drill','quiz','warm','shift','review','settings'];
 const RENDER = {learn: () => renderLearn(), drill: renderDrill, quiz: renderQuiz, warm: renderWarm, review: renderReview, settings: renderSettings,
   shift: () => { const a = $('accMet'), b = $('accReal'); a.classList.toggle('open', !S.met[today()]); b.classList.remove('open'); if (!S.met[today()]) renderMet(); }};
 function showSec(name, scroll = true){
-  micStop(); clearInterval(wt.h);
+  micStop(); clearInterval(wt.h); if (name !== 'learn' || open === 'learn') vizDispose();
   document.querySelectorAll('.cur').forEach(c => c.classList.remove('open'));
   document.querySelectorAll('.tile').forEach(t => t.classList.toggle('on', t.dataset.sec === name && open !== name));
   if (open === name) { open = null; return; }
